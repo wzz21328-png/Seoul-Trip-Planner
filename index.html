@@ -69,6 +69,38 @@
         </div>
     </nav>
 
+    <div class="max-w-4xl mx-auto px-4 pt-3 w-full flex items-center justify-between gap-2 flex-wrap text-xs">
+      <span id="gogo-save-status" aria-live="polite" class="text-slate-500">檢查儲存狀態中…</span>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="exportGogoBackup()" class="rounded-lg px-3 py-2 bg-white border border-pink-200 text-pink-700 font-semibold">↓ 匯出備份</button>
+        <label class="rounded-lg px-3 py-2 bg-white border border-slate-200 text-slate-600 font-semibold cursor-pointer">↑ 匯入備份<input type="file" accept=".json,application/json" onchange="importGogoBackup(this)" class="hidden"></label>
+      </div>
+    </div>
+
+    <section id="gogo-cloud-panel" class="max-w-4xl mx-auto px-4 pb-3 w-full">
+      <div class="bg-white border border-pink-100 rounded-2xl shadow-sm p-3 text-sm">
+        <div class="flex flex-wrap justify-between items-center gap-2">
+          <div><strong class="text-pink-700">☁️ L / N 雲端同步</strong><span id="cloud-state" class="ml-2 text-xs text-slate-500">尚未連線 · 本機可照常使用</span></div>
+          <button type="button" onclick="toggleCloudSetup()" class="bg-pink-50 text-pink-700 font-semibold rounded-xl px-3 py-2">雲端設定 ⚙️</button>
+        </div>
+        <div id="cloud-setup" class="hidden mt-3 border-t pt-3 space-y-3 text-xs text-slate-600">
+          <p>使用 Firebase Realtime Database，同一個房間的 L、N 會即時同步。首次需要在 Firebase 控制台建立專案、啟用「匿名登入」與即時資料庫，並設定安全規則（下載頁附教學）。</p>
+          <label class="block font-semibold">Firebase 網頁設定（貼入 firebaseConfig JSON）
+            <textarea id="cloud-config" rows="5" class="mt-1 w-full border border-slate-200 rounded-xl p-2 font-mono text-xs" placeholder='{"apiKey":"...","authDomain":"...","databaseURL":"https://...","projectId":"...","appId":"..."}'></textarea>
+          </label>
+          <label class="block font-semibold">共同房間 ID（兩人必須相同；建議使用自動產生的隨機 ID）
+            <input id="cloud-room" type="text" class="mt-1 w-full border border-slate-200 rounded-xl p-2 text-xs" placeholder="按下產生新房間" />
+          </label>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="generateCloudRoom()" type="button" class="bg-slate-100 rounded-lg px-3 py-2 font-semibold">🔑 產生新房間</button>
+            <button onclick="connectGogoCloud()" type="button" class="bg-purple-600 text-white rounded-lg px-3 py-2 font-semibold">☁️ 連接雲端</button>
+            <button onclick="copyGogoInvite()" type="button" class="bg-pink-500 text-white rounded-lg px-3 py-2 font-semibold">🔗 複製 L / N 邀請連結</button>
+            <button onclick="disconnectGogoCloud()" type="button" class="bg-slate-100 rounded-lg px-3 py-2">停止同步</button>
+          </div>
+          <div id="cloud-detail" class="text-slate-500">先連線，再分享連結給另一位；邀請連結含房間金鑰，請勿公開貼在社群。</div>
+        </div>
+      </div>
+    </section>
     <main class="max-w-4xl mx-auto px-4 py-6 flex-1 w-full mb-12">
 
         <!-- TAB 1: ITINERARY -->
@@ -590,7 +622,7 @@
                 forPerson: document.getElementById('edit-exp-for').value
             });
             closeExpenseEdit();
-            renderExpenses();
+            renderExpenses();persistApp();
         }
 
         function deleteExpense(id) {
@@ -1086,11 +1118,63 @@
         }
 
 
-        // Local data persistence: saved only within this browser/device.
+        // Save edits without duplicating the large pictures already embedded in this HTML.
         const STORAGE_KEY = 'gogo_seoul_2026_v2';
+        const DEFAULT_SPOT_PHOTOS = Object.fromEntries(Object.entries(spotsData).flatMap(([category,arr])=>arr.map(item=>[category+':'+item.id,item.image])));
+        let saveWarningShown = false;
+        function appSnapshot() {
+            const spots = {};
+            Object.entries(spotsData).forEach(([cat,arr]) => {
+                spots[cat] = arr.map(item=>{
+                    const copy={...item};
+                    if(DEFAULT_SPOT_PHOTOS[cat+':'+item.id]===copy.image) delete copy.image;
+                    return copy;
+                });
+            });
+            return {version:4,itineraryData,spotsData:spots,shoppingData,videoData,expenses,rate:document.getElementById('exchange-rate')?.value,staticBlocks:getGogoStaticBlocks()};
+        }
+        function savedPhotoRestore(saved) {
+            if(!saved || typeof saved!=='object') return saved;
+            Object.entries(saved).forEach(([cat,arr])=>{
+                if(!Array.isArray(arr))return;
+                arr.forEach(item=>{if(!item.image && DEFAULT_SPOT_PHOTOS[cat+':'+item.id])item.image=DEFAULT_SPOT_PHOTOS[cat+':'+item.id];});
+            });
+            return saved;
+        }
+        function saveStatus(message,isError=false) {
+            const el=document.getElementById('gogo-save-status');
+            if(el){el.textContent=message;el.style.color=isError?'#b91c1c':'#64748b';}
+        }
         function persistApp() {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify({itineraryData, spotsData, shoppingData, videoData, expenses, rate:document.getElementById('exchange-rate')?.value})); }
-            catch(e) { console.warn('無法在此瀏覽器儲存資料',e); }
+            try {
+                localStorage.setItem(STORAGE_KEY,JSON.stringify(appSnapshot()));
+                saveStatus('✓ 已儲存在此瀏覽器');
+                queueGogoCloudSave();
+                return true;
+            } catch(e) {
+                console.warn('儲存失敗',e);
+                saveStatus('⚠ 無法儲存！請使用備份下載',true);
+                if(!saveWarningShown){saveWarningShown=true;alert('這個瀏覽器無法永久儲存資料。請按「匯出備份」保留修改，或改用 Safari／Chrome 開啟正式網址。');}
+                return false;
+            }
+        }
+        function exportGogoBackup() {
+            const data={...appSnapshot(),spotsData:spotsData,staticBlocks:{}};
+            document.querySelectorAll('[data-gogo-static-key]').forEach(el=>{const key=el.dataset.gogoStaticKey;const clone=el.cloneNode(true);clone.querySelector('.gogo-static-toolbar')?.remove();data.staticBlocks[key]=clone.innerHTML;});
+            const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'});
+            const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='GOGO_首爾旅行_資料備份.json';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+        }
+        function importGogoBackup(input) {
+            const file=input.files?.[0];if(!file)return;
+            file.text().then(raw=>{
+                const d=JSON.parse(raw);
+                if(!d || !d.itineraryData || !d.spotsData || !d.shoppingData || !d.videoData || !Array.isArray(d.expenses))throw Error('不是有效的 GOGO 備份');
+                itineraryData=d.itineraryData;spotsData=savedPhotoRestore(d.spotsData);shoppingData=d.shoppingData;videoData=d.videoData;expenses=d.expenses;
+                if(d.rate)document.getElementById('exchange-rate').value=d.rate;
+                if(d.staticBlocks)Object.entries(d.staticBlocks).forEach(([key,html])=>{try{localStorage.setItem(key,html);}catch(e){}});
+                persistApp();renderItinerary();renderExpenses();renderSpots();renderShopping();renderVideo();renderRoutes();
+                alert('備份資料已匯入！如果在無痕模式或 LINE 內建瀏覽器，記得再匯出一份備份。');
+            }).catch(e=>alert('匯入失敗：'+e.message)).finally(()=>{input.value='';});
         }
         function restoreApp() {
             try {
@@ -1098,6 +1182,7 @@
                 if(!d) return;
                 if(d.itineraryData) itineraryData=d.itineraryData;
                 if(d.spotsData) {
+                    d.spotsData=savedPhotoRestore(d.spotsData);
                     // Merge default items so older versions do not accidentally omit cafes 8/9
                     Object.keys(spotsData).forEach(cat => {
                         const saved=d.spotsData[cat] || [];
@@ -1328,22 +1413,23 @@
         // Ensure saved data is restored on page reload without silently reassigning N to common.
         function restoreCurrentSavedData() {
             try {
-                const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(!d)return;
+                const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(!d){saveStatus('尚無儲存的修改');return;}
                 if(d.itineraryData)itineraryData=d.itineraryData;
-                if(d.spotsData)spotsData=d.spotsData;
+                if(d.spotsData)spotsData=savedPhotoRestore(d.spotsData);
                 if(d.shoppingData){shoppingData=d.shoppingData;shoppingData.L ||= [];shoppingData.N ||= [];}
                 if(d.videoData){videoData=d.videoData;videoData.common ||= [];videoData.L ||= [];videoData.N ||= [];}
                 if(Array.isArray(d.expenses))expenses=d.expenses;
                 if(d.rate)document.getElementById('exchange-rate').value=d.rate;
-            } catch(e){console.warn('讀取資料失敗',e);}
+                saveStatus('✓ 已讀取儲存的資料');
+            } catch(e){saveStatus('⚠ 讀取失敗',true);console.warn('讀取資料失敗',e);}
         }
         // Preserve personalized copy in the static medical and lodging cards too.
         function setupStaticEditors() {
             const blocks=[...document.querySelectorAll('#tab-medical > div > div'), document.querySelector('#tab-itinerary > div')].filter(Boolean);
             blocks.forEach((block,i)=>{
-                const key='gogo_static_block_'+i;
+                const key='gogo_static_block_'+i;block.dataset.gogoStaticKey=key;
                 try {const saved=localStorage.getItem(key);if(saved)block.innerHTML=saved;}catch(e){}
-                const bar=document.createElement('div');bar.className='mt-3 pt-2 border-t border-slate-100 flex justify-end gap-2';
+                const bar=document.createElement('div');bar.className='gogo-static-toolbar mt-3 pt-2 border-t border-slate-100 flex justify-end gap-2';
                 bar.innerHTML='<button type="button" class="gogo-static-edit text-purple-600 text-xs font-bold">✏️ 編輯文字</button><button type="button" class="gogo-static-save text-pink-600 text-xs font-bold hidden">儲存修改</button>';
                 block.appendChild(bar);
                 bar.querySelector('.gogo-static-edit').onclick=()=>{
@@ -1353,10 +1439,144 @@
                 bar.querySelector('.gogo-static-save').onclick=()=>{
                     block.querySelectorAll('[contenteditable]').forEach(n=>{n.removeAttribute('contenteditable');n.classList.remove('outline-dashed','outline-1','outline-pink-200');});
                     const clone=block.cloneNode(true);clone.querySelector('.gogo-static-edit')?.parentNode.remove();
-                    try {localStorage.setItem(key,clone.innerHTML);}catch(e){alert('儲存失敗，可能是瀏覽器空間不足');}
+                    try {localStorage.setItem(key,clone.innerHTML);saveStatus('✓ 文字已儲存');queueGogoCloudSave();}catch(e){saveStatus('⚠ 無法儲存文字',true);alert('儲存失敗，請匯出備份或更換瀏覽器');}
                     bar.querySelector('.gogo-static-save').classList.add('hidden');
                 };
             });
+        }
+
+
+        // Shared cloud database: Firebase Anonymous Auth + Realtime Database.
+        // The room token is the bearer secret. Share the invitation link privately.
+        let gogoCloud = {ready:false, applying:false, off:null, timer:null, db:null, auth:null, ref:null, api:null, room:null, config:null, lastVersion:null};
+        const CLOUD_SETTINGS_KEY='gogo_seoul_cloud_settings_v1';
+        const CLOUD_INVITE_PREFIX='gogo=';
+        function cloudState(message,error=false){
+            const el=document.getElementById('cloud-state');
+            if(el){el.textContent=message;el.style.color=error?'#b91c1c':'#64748b';}
+            const detail=document.getElementById('cloud-detail');if(detail)detail.textContent=message;
+        }
+        function toggleCloudSetup(){document.getElementById('cloud-setup').classList.toggle('hidden');}
+        function generateCloudRoom(){
+            const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
+            document.getElementById('cloud-room').value=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+        }
+        function b64EncodeUnicode(s){return btoa(Array.from(new TextEncoder().encode(s),b=>String.fromCharCode(b)).join('')).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/g,'');}
+        function b64DecodeUnicode(s){const binary=atob(s.replace(/-/g,'+').replace(/_/g,'/'));return new TextDecoder().decode(Uint8Array.from(binary,c=>c.charCodeAt(0)));}
+        function inviteSettings(){
+            const raw=document.getElementById('cloud-config').value;
+            return {config:JSON.parse(raw),room:document.getElementById('cloud-room').value.trim()};
+        }
+        async function copyGogoInvite(){
+            try{
+                const settings=inviteSettings();if(!settings.room)throw Error('請先產生房間 ID');
+                const url=location.origin+location.pathname+location.search+'#'+CLOUD_INVITE_PREFIX+b64EncodeUnicode(JSON.stringify(settings));
+                if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(url);alert('分享連結複製好了！傳給 L／N 就可以加入同一間房間 💗');}
+                else prompt('複製這個邀請連結',url);
+            }catch(e){alert('無法產生連結：'+e.message);}
+        }
+        function getGogoStaticBlocks(){
+            const result={};
+            document.querySelectorAll('[data-gogo-static-key]').forEach(el=>{
+                const clone=el.cloneNode(true);clone.querySelector('.gogo-static-toolbar')?.remove();result[el.dataset.gogoStaticKey]=clone.innerHTML;
+            });return result;
+        }
+        function applyGogoCloudSnapshot(d){
+            if(!d||!d.itineraryData||!d.spotsData||!d.shoppingData||!d.videoData||!Array.isArray(d.expenses))return;
+            gogoCloud.applying=true;
+            try{
+                itineraryData=d.itineraryData;
+                spotsData=savedPhotoRestore(d.spotsData);
+                shoppingData=d.shoppingData;shoppingData.L ||= [];shoppingData.N ||= [];
+                videoData=d.videoData;videoData.common ||= [];videoData.L ||= [];videoData.N ||= [];
+                expenses=d.expenses;
+                if(d.rate)document.getElementById('exchange-rate').value=d.rate;
+                if(d.staticBlocks){
+                    Object.entries(d.staticBlocks).forEach(([key,html])=>{
+                        try{localStorage.setItem(key,html);}catch(e){}
+                        const el=document.querySelector('[data-gogo-static-key="'+key+'"]');
+                        if(el){const toolbar=el.querySelector('.gogo-static-toolbar');el.innerHTML=html;if(toolbar)el.appendChild(toolbar);}
+                    });
+                }
+                try{localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}catch(e){console.warn('cloud local backup failed',e);}
+                renderItinerary();renderExpenses();renderSpots();renderShopping();renderVideo();renderRoutes();
+                saveStatus('✓ 已從雲端更新');
+            }finally{gogoCloud.applying=false;}
+        }
+        function queueGogoCloudSave(){
+            if(!gogoCloud.ready||gogoCloud.applying)return;
+            clearTimeout(gogoCloud.timer);
+            gogoCloud.timer=setTimeout(async()=>{
+                try{
+                    const payload={data:appSnapshot(),lastEdit:Date.now(),sender:gogoCloud.auth.currentUser?.uid||''};
+                    await gogoCloud.api.set(gogoCloud.ref,payload);
+                    cloudState('✓ 雲端已同步 · L / N 都會看到');
+                }catch(e){cloudState('⚠ 雲端儲存失敗：'+e.message,true);}
+            },800);
+        }
+        async function connectGogoCloud(){
+            try{
+                const {config,room}=inviteSettings();
+                if(!config.apiKey||!config.projectId||!config.databaseURL||!config.appId)throw Error('firebaseConfig 缺少必要欄位');
+                if(!/^[a-zA-Z0-9_-]{20,128}$/.test(room))throw Error('請按「產生新房間」，使用隨機房間 ID');
+                disconnectGogoCloud(false);
+                cloudState('正在連線 Firebase…');
+                const [appmod,authmod,dbmod]=await Promise.all([
+                    import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
+                    import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js'),
+                    import('https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js')
+                ]);
+                const app=appmod.initializeApp(config,'gogo-cloud-'+Date.now());
+                const auth=authmod.getAuth(app);
+                await authmod.signInAnonymously(auth);
+                const db=dbmod.getDatabase(app);
+                const ref=dbmod.ref(db,'gogoRooms/'+room+'/current');
+                const before=await dbmod.get(ref);
+                gogoCloud={ready:true,applying:false,off:null,timer:null,db,auth,ref,api:dbmod,room,config,lastVersion:before.val()?.lastEdit??null};
+                try{localStorage.setItem(CLOUD_SETTINGS_KEY,JSON.stringify({config,room}));}catch(e){}
+                if(before.exists()){
+                    const remote=before.val();
+                    const local=appSnapshot();
+                    const old=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+                    const changed=old && JSON.stringify(old)!==JSON.stringify(remote.data);
+                    if(changed && confirm('發現本機與雲端資料不同。\n按「確定」使用雲端資料（推薦）。\n按「取消」把本機資料上傳覆蓋雲端。')){
+                        applyGogoCloudSnapshot(remote.data);
+                    }else if(changed){queueGogoCloudSave();}
+                    else applyGogoCloudSnapshot(remote.data);
+                }else{
+                    await dbmod.set(ref,{data:appSnapshot(),lastEdit:Date.now(),sender:auth.currentUser.uid});
+                }
+                gogoCloud.off=dbmod.onValue(ref,snapshot=>{
+                    if(!gogoCloud.ready||!snapshot.exists())return;
+                    const item=snapshot.val();
+                    if(item.sender===gogoCloud.auth.currentUser?.uid)return;
+                    if(item.lastEdit===gogoCloud.lastVersion)return;
+                    gogoCloud.lastVersion=item.lastEdit;
+                    applyGogoCloudSnapshot(item.data);
+                    cloudState('✓ 已收到另一台裝置的更新');
+                },error=>cloudState('⚠ 同步監聽失敗：'+error.message,true));
+                cloudState('✓ 已連線 · 同一房間兩人可同步');
+            }catch(e){gogoCloud.ready=false;cloudState('⚠ 連線失敗：'+e.message,true);console.error(e);}
+        }
+        function disconnectGogoCloud(clearSettings=true){
+            clearTimeout(gogoCloud.timer);gogoCloud.off?.();gogoCloud.ready=false;
+            if(clearSettings){try{localStorage.removeItem(CLOUD_SETTINGS_KEY);}catch(e){}cloudState('已停止雲端同步（本機資料仍保留）');}
+        }
+        function initializeGogoCloud(){
+            try{
+                const hash=location.hash.slice(1);
+                let settings=null;
+                if(hash.startsWith(CLOUD_INVITE_PREFIX)){
+                    settings=JSON.parse(b64DecodeUnicode(hash.slice(CLOUD_INVITE_PREFIX.length)));
+                    // Room secret should not remain exposed in browser history after onboarding.
+                    history.replaceState(null,'',location.pathname+location.search);
+                }else settings=JSON.parse(localStorage.getItem(CLOUD_SETTINGS_KEY)||'null');
+                if(settings?.config&&settings?.room){
+                    document.getElementById('cloud-config').value=JSON.stringify(settings.config,null,2);
+                    document.getElementById('cloud-room').value=settings.room;
+                    connectGogoCloud();
+                }else{generateCloudRoom();cloudState('尚未連線 · 點「雲端設定」開始');}
+            }catch(e){console.warn('雲端設定格式無法讀取',e);cloudState('尚未連線 · 請重新設定');}
         }
 
         // Initialize on load
@@ -1368,6 +1588,7 @@
             renderSpots();
             renderShopping();
             renderVideo();
+            initializeGogoCloud();
         };
     </script>
 </body>
