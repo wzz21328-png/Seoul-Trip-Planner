@@ -545,6 +545,7 @@
         }
 
         function editExpense(id) {
+            document.getElementById('modal-form').onsubmit=null;
             const exp = expenses.find(x => x.id === id);
             if (!exp) return;
             const modal = document.getElementById('add-modal');
@@ -857,6 +858,7 @@
         let currentModalType = '';
         let editingItinerary = null;
         function openAddModal(type) {
+            document.getElementById('modal-form').onsubmit=null;
             editingItinerary = null;
             currentModalType = type;
             document.getElementById('modal-form').setAttribute('onsubmit', 'saveModalItem(event)');
@@ -1229,8 +1231,138 @@
         });
         document.getElementById('exchange-rate').addEventListener('change',persistApp);
 
+
+        // Editable cards use the original copy and layout; only controls are added.
+        function gogoEditor(title, fields, done) {
+            const modal = document.getElementById('add-modal');
+            const form = document.getElementById('modal-form');
+            document.getElementById('modal-title').textContent = '✏️ '+title;
+            const inputClass = 'w-full mt-1 px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400';
+            form.removeAttribute('onsubmit');
+            form.onsubmit=null;
+            form.innerHTML = fields.map((f,i)=>{
+                const v=escapeHtml(f.value??'');
+                const label=escapeHtml(f.label);
+                if(f.options) return `<label class="block text-xs font-medium text-slate-600">${label}<select data-editor="${i}" class="${inputClass}">${f.options.map(x=>`<option value="${escapeHtml(x.value)}" ${String(x.value)===String(f.value)?'selected':''}>${escapeHtml(x.text)}</option>`).join('')}</select></label>`;
+                if(f.multiline)return `<label class="block text-xs font-medium text-slate-600">${label}<textarea data-editor="${i}" rows="3" class="${inputClass}">${v}</textarea></label>`;
+                return `<label class="block text-xs font-medium text-slate-600">${label}<input data-editor="${i}" type="${f.type||'text'}" ${f.required?'required':''} value="${v}" class="${inputClass}"></label>`;
+            }).join('') + '<div class="flex gap-2 pt-2"><button type="button" onclick="closeAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl font-bold text-sm">取消</button><button type="submit" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl font-bold text-sm">儲存修改</button></div>';
+            form.onsubmit = function(event) {
+                event.preventDefault();
+                const values=fields.map((_,i)=>form.querySelector(`[data-editor="${i}"]`).value);
+                try {done(values);persistApp();closeAddModal();} catch(e){alert('沒有儲存成功，請再試一次');console.error(e);}
+            };
+            modal.classList.remove('hidden');
+        }
+        function editShoppingFull(id) {
+            const person=shoppingPerson, item=shoppingData[person].find(x=>String(x.id)===String(id));if(!item)return;
+            gogoEditor('編輯購物項目',[
+                {label:'物品名稱',value:item.name,required:true},
+                {label:'備註／色號',value:item.desc,multiline:true},
+                {label:'清單歸屬',value:person,options:[{value:'L',text:'L'},{value:'N',text:'N'}]}
+            ],([name,desc,to])=>{if(!name.trim())return;item.name=name.trim();item.desc=desc;
+                if(to!==person){shoppingData[person]=shoppingData[person].filter(x=>x!==item);shoppingData[to].push(item);}
+                renderShopping();});
+        }
+        function editVideoFull(id) {
+            const person=videoPerson,item=videoData[person].find(x=>String(x.id)===String(id));if(!item)return;
+            gogoEditor('編輯拍片靈感',[
+                {label:'靈感名稱',value:item.name,required:true},
+                {label:'拍片內容',value:item.desc,multiline:true},
+                {label:'參考連結',value:item.link||'',type:'url'},
+                {label:'歸屬',value:person,options:[{value:'common',text:'共同'},{value:'L',text:'L'},{value:'N',text:'N'}]}
+            ],([name,desc,link,to])=>{if(!name.trim())return;item.name=name.trim();item.desc=desc;item.link=link.trim();
+                if(to!==person){videoData[person]=videoData[person].filter(x=>x!==item);videoData[to].push(item);}
+                renderVideo();});
+        }
+        function editSpotFull(category,id) {
+            const item=(spotsData[category]||[]).find(x=>String(x.id)===String(id));if(!item)return;
+            const areas=[...document.querySelectorAll('#area-filter option')].map(o=>o.value).filter(x=>x!=='all');
+            if(!areas.includes(item.area))areas.push(item.area);
+            gogoEditor('編輯咖啡廳／景點',[
+                {label:'名稱',value:item.name,required:true},
+                {label:'分類',value:category,options:[{value:'cafes',text:'咖啡廳'},{value:'attractions',text:'景點'}]},
+                {label:'區域',value:item.area,options:areas.map(x=>({value:x,text:x}))},
+                {label:'簡介說明',value:item.desc,multiline:true},
+                {label:'相關連結／地圖',value:item.link==='#'?'':item.link||''},
+                {label:'照片網址（留空保留原照片）',value:'',type:'url'},
+                {label:'行程標籤',value:item.tagMode||'auto',options:[{value:'auto',text:'自動跟行程同步'},{value:'planned',text:'已排行程'},{value:'wishlist',text:'口袋名單'}]}
+            ],([name,to,area,desc,link,image,tag])=>{
+                if(!name.trim())return;
+                Object.assign(item,{name:name.trim(),area,desc,link:link.trim()||'#',tagMode:tag});
+                if(image.trim()){item.image=image.trim();item.customPhoto=true;}
+                if(to!==category){spotsData[category]=spotsData[category].filter(x=>x!==item);spotsData[to].push(item);spotSubTab=to;}
+                renderSpots();
+            });
+        }
+        // Attach unobtrusive edit buttons after existing rendering routines.
+        const originalRenderShopping=renderShopping;
+        renderShopping=function(){originalRenderShopping();
+            [...document.getElementById('shopping-container').children].forEach((card,i)=>{
+                const item=shoppingData[shoppingPerson][i];if(!item)return;
+                const target=card.querySelector('div.shrink-0')||card;
+                const b=document.createElement('button');b.type='button';b.title='編輯購物';b.setAttribute('aria-label','編輯購物');b.className='text-purple-500 hover:text-purple-700 p-2';b.innerHTML='<i class="fa-solid fa-pen-to-square"></i>';
+                b.onclick=()=>editShoppingFull(item.id); target.insertBefore(b,target.querySelector('button')||null);
+            });
+        };
+        const originalRenderVideo=renderVideo;
+        renderVideo=function(){originalRenderVideo();
+            [...document.getElementById('video-container').children].forEach((card,i)=>{
+                const item=videoData[videoPerson][i];if(!item)return;
+                const target=card.querySelector('div.shrink-0')||card;
+                const b=document.createElement('button');b.type='button';b.title='編輯靈感';b.setAttribute('aria-label','編輯靈感');b.className='text-purple-500 hover:text-purple-700 p-2';b.innerHTML='<i class="fa-solid fa-pen-to-square"></i>';
+                b.onclick=()=>editVideoFull(item.id);target.insertBefore(b,target.querySelector('button')||null);
+            });
+        };
+        const originalRenderSpots=renderSpots;
+        renderSpots=function(){originalRenderSpots();
+            const filter=document.getElementById('area-filter').value;
+            const items=spotsData[spotSubTab].filter(x=>filter==='all'||x.area===filter);
+            [...document.getElementById('spots-container').children].forEach((card,i)=>{
+                const item=items[i];if(!item)return;
+                const target=card.querySelector('div.border-t');if(!target)return;
+                const b=document.createElement('button');b.type='button';b.title='編輯景點';b.setAttribute('aria-label','編輯景點');b.className='text-purple-500 font-semibold mr-2';b.innerHTML='<i class="fa-solid fa-pen-to-square"></i> 編輯';b.onclick=()=>editSpotFull(spotSubTab,item.id);
+                target.insertBefore(b,target.querySelector('button')||null);
+            });
+        };
+        // Ensure saved data is restored on page reload without silently reassigning N to common.
+        function restoreCurrentSavedData() {
+            try {
+                const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(!d)return;
+                if(d.itineraryData)itineraryData=d.itineraryData;
+                if(d.spotsData)spotsData=d.spotsData;
+                if(d.shoppingData){shoppingData=d.shoppingData;shoppingData.L ||= [];shoppingData.N ||= [];}
+                if(d.videoData){videoData=d.videoData;videoData.common ||= [];videoData.L ||= [];videoData.N ||= [];}
+                if(Array.isArray(d.expenses))expenses=d.expenses;
+                if(d.rate)document.getElementById('exchange-rate').value=d.rate;
+            } catch(e){console.warn('讀取資料失敗',e);}
+        }
+        // Preserve personalized copy in the static medical and lodging cards too.
+        function setupStaticEditors() {
+            const blocks=[...document.querySelectorAll('#tab-medical > div > div'), document.querySelector('#tab-itinerary > div')].filter(Boolean);
+            blocks.forEach((block,i)=>{
+                const key='gogo_static_block_'+i;
+                try {const saved=localStorage.getItem(key);if(saved)block.innerHTML=saved;}catch(e){}
+                const bar=document.createElement('div');bar.className='mt-3 pt-2 border-t border-slate-100 flex justify-end gap-2';
+                bar.innerHTML='<button type="button" class="gogo-static-edit text-purple-600 text-xs font-bold">✏️ 編輯文字</button><button type="button" class="gogo-static-save text-pink-600 text-xs font-bold hidden">儲存修改</button>';
+                block.appendChild(bar);
+                bar.querySelector('.gogo-static-edit').onclick=()=>{
+                    block.querySelectorAll('h2,h3,p,span,li').forEach(n=>{if(!bar.contains(n)){n.contentEditable='true';n.classList.add('outline-dashed','outline-1','outline-pink-200');}});
+                    bar.querySelector('.gogo-static-save').classList.remove('hidden');
+                };
+                bar.querySelector('.gogo-static-save').onclick=()=>{
+                    block.querySelectorAll('[contenteditable]').forEach(n=>{n.removeAttribute('contenteditable');n.classList.remove('outline-dashed','outline-1','outline-pink-200');});
+                    const clone=block.cloneNode(true);clone.querySelector('.gogo-static-edit')?.parentNode.remove();
+                    try {localStorage.setItem(key,clone.innerHTML);}catch(e){alert('儲存失敗，可能是瀏覽器空間不足');}
+                    bar.querySelector('.gogo-static-save').classList.add('hidden');
+                };
+            });
+        }
+
         // Initialize on load
         window.onload = function() {
+            restoreCurrentSavedData();
+            setupStaticEditors();
             renderItinerary();
             renderExpenses();
             renderSpots();
