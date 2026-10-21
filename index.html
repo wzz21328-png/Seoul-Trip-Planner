@@ -448,7 +448,10 @@
                         </div>
                         <p class="text-sm text-slate-600 mt-2 whitespace-pre-line">${item.desc}</p>
                     </div>
-                    <button onclick="deleteItineraryItem('${currentDay}', ${item.id})" class="text-slate-400 hover:text-red-500 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button type="button" onclick="editItineraryItem('${currentDay}', ${item.id})" aria-label="編輯行程" title="編輯行程" class="text-purple-500 hover:text-purple-700 p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteItineraryItem('${currentDay}', ${item.id})" class="text-slate-400 hover:text-red-500 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
                 `;
                 container.appendChild(card);
             });
@@ -797,7 +800,9 @@
 
         // Modal Handler for Additions
         let currentModalType = '';
+        let editingItinerary = null;
         function openAddModal(type) {
+            editingItinerary = null;
             currentModalType = type;
             const modal = document.getElementById('add-modal');
             const titleEl = document.getElementById('modal-title');
@@ -930,6 +935,20 @@
             modal.classList.remove('hidden');
         }
 
+        function editItineraryItem(day, id) {
+            const item = (itineraryData[day] || []).find(x => String(x.id) === String(id));
+            if (!item) return;
+            openAddModal('itinerary');
+            editingItinerary = { day, id };
+            document.getElementById('modal-title').innerText = '✏️ 編輯行程項目';
+            document.getElementById('m-item-day').value = day;
+            document.getElementById('m-item-time').value = item.time || '';
+            document.getElementById('m-item-title').value = item.title || '';
+            document.getElementById('m-item-desc').value = item.desc || '';
+            const submit = document.querySelector('#modal-form button[type="submit"]');
+            if (submit) submit.textContent = '儲存修改';
+        }
+
         function closeAddModal() {
             document.getElementById('add-modal').classList.add('hidden');
         }
@@ -943,7 +962,22 @@
                 const desc = document.getElementById('m-item-desc').value;
 
                 if(!itineraryData[day]) itineraryData[day] = [];
-                itineraryData[day].push({ id: Date.now(), time, title, desc });
+                if (editingItinerary) {
+                    const originalDay = editingItinerary.day;
+                    const id = editingItinerary.id;
+                    const originalIndex = (itineraryData[originalDay] || []).findIndex(x => String(x.id) === String(id));
+                    if (originalIndex !== -1) {
+                        if (originalDay === day) {
+                            Object.assign(itineraryData[day][originalIndex], { time, title, desc });
+                        } else {
+                            const [original] = itineraryData[originalDay].splice(originalIndex, 1);
+                            itineraryData[day].push({ ...original, time, title, desc });
+                        }
+                    }
+                } else {
+                    itineraryData[day].push({ id: Date.now(), time, title, desc });
+                }
+                editingItinerary = null;
                 closeAddModal();
                 switchDay(day);
             } else if(currentModalType === 'spot') {
