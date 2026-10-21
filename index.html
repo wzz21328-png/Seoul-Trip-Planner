@@ -116,11 +116,7 @@
                 <button onclick="switchRouteDay('rd3')" class="route-day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D3 路線</button>
                 <button onclick="switchRouteDay('rd4')" class="route-day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D4 路線</button>
             </div>
-
-            <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900">🗺️ 這是行程順序示意圖，不代表真實道路或距離。新增、刪除、上移下移都會同步！搭車班次和時間請開 NAVER 確認喔。</div>
-            <div id="dynamic-routes" class="space-y-4"></div>
-        </section>
-
+            
         <!-- TAB 3: SPLIT CALCULATOR -->
         <section id="tab-split" class="tab-content space-y-6 hidden">
             <div class="bg-gradient-to-r from-pink-500 to-purple-600 p-6 rounded-2xl text-white shadow-md">
@@ -471,46 +467,60 @@
             return Number(amount);
         }
 
+        function escapeExpenseText(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+
         function renderExpenses() {
             const listEl = document.getElementById('expense-list');
             listEl.innerHTML = '';
-            
             let totalN = 0;
             let totalL = 0;
+            let balanceN = 0;
+            let balanceL = 0;
 
             expenses.forEach(exp => {
                 const twdVal = convertToTwd(exp.amount, exp.currency);
                 if (exp.payer === 'N') totalN += twdVal;
                 if (exp.payer === 'L') totalL += twdVal;
+                const owner = exp.forPerson || 'both';
+                const shareN = owner === 'N' ? twdVal : owner === 'L' ? 0 : twdVal / 2;
+                const shareL = twdVal - shareN;
+                balanceN += (exp.payer === 'N' ? twdVal : 0) - shareN;
+                balanceL += (exp.payer === 'L' ? twdVal : 0) - shareL;
 
-                const displayStr = exp.currency === 'KRW' ? `₩ ${Number(exp.amount).toLocaleString()} (≒ NT$ ${Math.round(twdVal).toLocaleString()})` : `NT$ ${Number(exp.amount).toLocaleString()}`;
-
+                const displayStr = exp.currency === 'KRW'
+                    ? `₩ ${Number(exp.amount).toLocaleString()} (≒ NT$ ${Math.round(twdVal).toLocaleString()})`
+                    : `NT$ ${Number(exp.amount).toLocaleString()}`;
+                const label = owner === 'L' ? 'L 消費' : owner === 'N' ? 'N 消費' : '共同';
                 const item = document.createElement('div');
-                item.className = 'flex justify-between items-center bg-slate-50 p-3 rounded-xl text-sm';
+                item.className = 'bg-slate-50 p-3 sm:p-4 rounded-xl text-sm';
                 item.innerHTML = `
-                    <div>
-                        <span class="font-bold text-slate-800">${exp.name}</span>
-                        <span class="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md ml-2">${exp.payer} 先付 · ${exp.forPerson==='L'?'L 消費':exp.forPerson==='N'?'N 消費':'共同'}</span>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <span class="font-bold text-pink-600">${displayStr}</span>
-                        <button onclick="deleteExpense(${exp.id})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                `;
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0 flex-1">
+                            <div class="font-bold text-slate-800 break-words">${escapeExpenseText(exp.name)}</div>
+                            <div class="mt-2"><span class="inline-block text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-md">${exp.payer} 先付 · ${label}</span></div>
+                        </div>
+                        <div class="flex items-start gap-3 shrink-0">
+                            <div class="font-bold text-pink-600 text-right whitespace-nowrap">${exp.currency === 'KRW' ? `₩ ${Number(exp.amount).toLocaleString()}` : displayStr}
+                                ${exp.currency === 'KRW' ? `<div class="text-[10px] text-slate-500">≒ NT$ ${Math.round(twdVal).toLocaleString()}</div>` : ''}
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <button onclick="editExpense(${exp.id})" title="編輯記帳" aria-label="編輯記帳" class="text-purple-500 hover:text-purple-700"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="deleteExpense(${exp.id})" title="刪除記帳" aria-label="刪除記帳" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>`;
                 listEl.appendChild(item);
             });
 
             document.getElementById('total-n').innerText = `NT$ ${Math.round(totalN).toLocaleString()}`;
             document.getElementById('total-l').innerText = `NT$ ${Math.round(totalL).toLocaleString()}`;
-
-            const diff = totalN - totalL;
             const summaryEl = document.getElementById('settle-summary');
-            if (diff > 0) {
-                const half = Math.round(diff / 2);
-                summaryEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> <strong>結算結果</strong>：L 需補貼給 N 共 <strong>NT$ ${half.toLocaleString()}</strong>`;
-            } else if (diff < 0) {
-                const half = Math.round(Math.abs(diff) / 2);
-                summaryEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> <strong>結算結果</strong>：N 需補貼給 L 共 <strong>NT$ ${half.toLocaleString()}</strong>`;
+            if (balanceN > 0.005) {
+                summaryEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> <strong>結算結果</strong>：L 需補貼給 N 共 <strong>NT$ ${Math.round(balanceN).toLocaleString()}</strong>`;
+            } else if (balanceL > 0.005) {
+                summaryEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> <strong>結算結果</strong>：N 需補貼給 L 共 <strong>NT$ ${Math.round(balanceL).toLocaleString()}</strong>`;
             } else {
                 summaryEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> <strong>結算結果</strong>：目前帳目完全平手，互不欠款！`;
             }
@@ -518,22 +528,65 @@
 
         function addExpense(e) {
             e.preventDefault();
-            const name = document.getElementById('exp-name').value;
-            const amount = document.getElementById('exp-amount').value;
-            const currency = document.getElementById('exp-currency').value;
-            const payer = document.getElementById('exp-payer').value;
-             const forPerson = document.getElementById('exp-for').value;
-
+            const name = document.getElementById('exp-name').value.trim();
+            const amount = Number(document.getElementById('exp-amount').value);
+            if (!name || !(amount > 0)) return;
             expenses.push({
-                id: Date.now(),
-                name,
-                amount,
-                currency,
-                payer
+                id: Date.now(), name, amount,
+                currency: document.getElementById('exp-currency').value,
+                payer: document.getElementById('exp-payer').value,
+                forPerson: document.getElementById('exp-for').value
             });
-
             document.getElementById('exp-name').value = '';
             document.getElementById('exp-amount').value = '';
+            renderExpenses();
+        }
+
+        function editExpense(id) {
+            const exp = expenses.find(x => x.id === id);
+            if (!exp) return;
+            const modal = document.getElementById('add-modal');
+            const titleEl = document.getElementById('modal-title');
+            const formEl = document.getElementById('modal-form');
+            titleEl.textContent = '✏️ 編輯記帳';
+            // Keep the existing modal for all other features unchanged.
+            formEl.onsubmit = null;
+            formEl.setAttribute('onsubmit', 'saveExpenseEdit(event)');
+            formEl.innerHTML = `
+                <input type="hidden" id="edit-exp-id" value="${exp.id}">
+                <label class="block text-xs font-medium text-slate-600">消費項目名稱<input id="edit-exp-name" required class="block w-full mt-1 px-3 py-2 rounded-xl border border-slate-200 text-sm" value="${escapeExpenseText(exp.name)}"></label>
+                <div class="grid grid-cols-3 gap-3">
+                    <label class="col-span-2 text-xs font-medium text-slate-600">金額<input id="edit-exp-amount" required type="number" min="0.01" step="any" class="block w-full mt-1 px-3 py-2 rounded-xl border border-slate-200 text-sm" value="${Number(exp.amount)}"></label>
+                    <label class="text-xs font-medium text-slate-600">幣別<select id="edit-exp-currency" class="block w-full mt-1 px-2 py-2 rounded-xl border border-slate-200 text-sm"><option value="TWD">台幣</option><option value="KRW">韓元</option></select></label>
+                </div>
+                <label class="block text-xs font-medium text-slate-600">誰先付的？<select id="edit-exp-payer" class="block w-full mt-1 px-3 py-2 rounded-xl border border-slate-200 text-sm"><option value="N">N 先付</option><option value="L">L 先付</option></select></label>
+                <label class="block text-xs font-medium text-slate-600">費用歸屬<select id="edit-exp-for" class="block w-full mt-1 px-3 py-2 rounded-xl border border-slate-200 text-sm"><option value="both">L / N 均分</option><option value="L">只有 L</option><option value="N">只有 N</option></select></label>
+                <div class="flex gap-2 pt-2"><button type="button" onclick="closeExpenseEdit()" class="flex-1 bg-slate-100 text-slate-600 rounded-xl py-2.5 text-sm font-bold">取消</button><button type="submit" class="flex-1 bg-pink-500 text-white rounded-xl py-2.5 text-sm font-bold">儲存修改</button></div>`;
+            document.getElementById('edit-exp-currency').value = exp.currency;
+            document.getElementById('edit-exp-payer').value = exp.payer;
+            document.getElementById('edit-exp-for').value = exp.forPerson || 'both';
+            modal.classList.remove('hidden');
+        }
+
+        function closeExpenseEdit() {
+            closeAddModal();
+            document.getElementById('modal-form').setAttribute('onsubmit', 'saveModalItem(event)');
+        }
+
+        function saveExpenseEdit(e) {
+            e.preventDefault();
+            const id = Number(document.getElementById('edit-exp-id').value);
+            const exp = expenses.find(x => x.id === id);
+            const amount = Number(document.getElementById('edit-exp-amount').value);
+            const name = document.getElementById('edit-exp-name').value.trim();
+            if (!exp || !name || !(amount > 0)) return;
+            Object.assign(exp, {
+                name, amount,
+                currency: document.getElementById('edit-exp-currency').value,
+                payer: document.getElementById('edit-exp-payer').value,
+                forPerson: document.getElementById('edit-exp-for').value
+            });
+            closeExpenseEdit();
             renderExpenses();
         }
 
@@ -804,6 +857,7 @@
         function openAddModal(type) {
             editingItinerary = null;
             currentModalType = type;
+            document.getElementById('modal-form').setAttribute('onsubmit', 'saveModalItem(event)');
             const modal = document.getElementById('add-modal');
             const titleEl = document.getElementById('modal-title');
             const formEl = document.getElementById('modal-form');
@@ -950,6 +1004,7 @@
         }
 
         function closeAddModal() {
+            document.getElementById('modal-form').setAttribute('onsubmit', 'saveModalItem(event)');
             document.getElementById('add-modal').classList.add('hidden');
         }
 
