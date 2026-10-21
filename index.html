@@ -36,19 +36,22 @@
                 <i class="fa-solid fa-calendar-days mb-1"></i><span>行程</span>
             </button>
             <button onclick="switchTab('routes')" id="btn-routes" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
-                <i class="fa-solid fa-route mb-1"></i><span>路線規劃</span>
+                <i class="fa-solid fa-route mb-1"></i><span>路線</span>
             </button>
             <button onclick="switchTab('split')" id="btn-split" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
                 <i class="fa-solid fa-wallet mb-1"></i><span>分帳</span>
             </button>
             <button onclick="switchTab('spots')" id="btn-spots" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
-                <i class="fa-solid fa-mug-hot mb-1"></i><span>景點</span>
+                <i class="fa-solid fa-mug-hot mb-1"></i><span>景點/咖啡</span>
             </button>
             <button onclick="switchTab('medical')" id="btn-medical" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
                 <i class="fa-solid fa-syringe mb-1"></i><span>醫美</span>
             </button>
             <button onclick="switchTab('shopping')" id="btn-shopping" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
                 <i class="fa-solid fa-bag-shopping mb-1"></i><span>購物</span>
+            </button>
+            <button onclick="switchTab('video')" id="btn-video" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
+                <i class="fa-solid fa-video mb-1"></i><span>拍片企劃</span>
             </button>
             <button onclick="switchTab('tools')" id="btn-tools" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
                 <i class="fa-solid fa-compass mb-1"></i><span>地鐵/外送</span>
@@ -79,7 +82,7 @@
                     <button onclick="switchDay('d3')" class="day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D3 (10/24)</button>
                     <button onclick="switchDay('d4')" class="day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D4 (10/25)</button>
                 </div>
-                <button onclick="openAddModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm flex items-center justify-center gap-2 transition-all">
+                <button onclick="openAddModal('itinerary')" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm flex items-center justify-center gap-2 transition-all">
                     <i class="fa-solid fa-plus"></i> 新增行程項目
                 </button>
             </div>
@@ -90,8 +93,7 @@
             </div>
         </section>
 
-        <!-- TAB 2: ROUTE PLANNER -->
-        <section id="route-tab" class="tab-content space-y-6 hidden">
+        <section id="tab-routes" class="tab-content space-y-6 hidden">
             <div class="bg-gradient-to-r from-purple-600 to-pink-500 p-6 rounded-2xl text-white shadow-md">
                 <h2 class="text-lg font-bold"><i class="fa-solid fa-route"></i> 🗺️ 每日最佳化路線與景點指南</h2>
                 <p class="text-xs text-purple-100 mt-1">結合試算表詳細地址與地鐵口攻略，一鍵點擊 Naver/Google 導航不迷路！</p>
@@ -120,23 +122,6 @@
                                 <a href="https://naver.me/xdIOeUhg" target="_blank" class="text-xs text-pink-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-map-location-dot"></i> Naver 導航</a>
                             </div>
                         </div>
-                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 地鐵 4 號線 (約 10 分鐘)</div>
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">明洞 Ceramique Clinic 醫美</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">📍 首爾特別市中區明洞8街27, M-Plaza 4樓 | 🚇 明洞站 6 號出口</p>
-                                <a href="https://share.google/ra9rAhzFNhDfiIeCo" target="_blank" class="text-xs text-pink-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-map-location-dot"></i> 地點導航</a>
-                            </div>
-                        </div>
-                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 晚餐與移動</div>
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">漢江公園散步看夜景</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">📍 推薦汝矣島或盤浦漢江公園感受秋夜浪漫</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -153,31 +138,6 @@
                             <div class="flex-1">
                                 <h4 class="font-bold text-sm text-slate-800">Thomas Bakery 早午餐</h4>
                                 <p class="text-xs text-slate-500 mt-0.5">📍 首爾特別市鐘路區崇인洞 202-14 | 🚇 東廟前站 3 號出口</p>
-                                <a href="https://www.instagram.com/thomasbakery_/" target="_blank" class="text-xs text-purple-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-camera"></i> IG 參考</a>
-                            </div>
-                        </div>
-                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 地鐵 3 號線</div>
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">景福宮 & 北村韓屋村 Citywalk</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">📍 景福宮站 5 號出口 / 迎秋門拍秋景銀杏</p>
-                            </div>
-                        </div>
-                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 地鐵 2 號線</div>
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">聖水洞 & 漢南洞逛街血拼</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">📍 聖水站 / 漢南洞一帶潮牌與咖啡廳</p>
-                            </div>
-                        </div>
-                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 回東大門</div>
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">東大門設計廣場 (DDP) 夜市</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">📍 飯店步行即可抵達</p>
                             </div>
                         </div>
                     </div>
@@ -196,24 +156,6 @@
                             <div class="flex-1">
                                 <h4 class="font-bold text-sm text-slate-800">Hai Weat Ikseon 益善洞早午餐</h4>
                                 <p class="text-xs text-slate-500 mt-0.5">📍 益善洞韓屋村內 | 🚇 鐘路三街站 6 號出口</p>
-                                <a href="https://www.threads.com/share/E5ctBvpgm/" target="_blank" class="text-xs text-purple-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-heart"></i> Threads 介紹</a>
-                            </div>
-                        </div>
-                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 地鐵 3 號線直達江南</div>
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">江南 歐爾塔醫院 (ORTA) 新館</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">📍 瑞草區江南大路 447 南首爾大廈 7層 | 16:00 預約 (需拍影片)</p>
-                                <a href="https://maps.app.goo.gl/aEBuvjEabVunwi9N9" target="_blank" class="text-xs text-pink-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-map-location-dot"></i> Google 地圖導航</a>
-                            </div>
-                        </div>
-                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 江南商圈</div>
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">樂天超市掃貨零食伴手禮</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">📍 江南或首爾站採買</p>
                             </div>
                         </div>
                     </div>
@@ -226,45 +168,28 @@
                         <h3 class="font-bold text-slate-800 text-base">Day 4：明洞乙支路早午餐 ➡️ 機場返台</h3>
                         <span class="text-xs bg-purple-50 text-purple-600 px-3 py-1 rounded-full font-bold">輕鬆返程線</span>
                     </div>
-                    <div class="space-y-3">
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">明洞 / 乙支路商圈逛街 & 早午餐</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">📍 參考《漢娜不在家｜明洞行程懶人包》</p>
-                            </div>
-                        </div>
-                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 機場快線 / 機場巴士</div>
-                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
-                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm text-slate-800">仁川機場搭機返台 (13:25 - 15:55)</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">🛬 帶滿滿戰利品回家</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 3: SPLIT CALCULATOR -->
         <section id="tab-split" class="tab-content space-y-6 hidden">
             <div class="bg-gradient-to-r from-pink-500 to-purple-600 p-6 rounded-2xl text-white shadow-md">
-                <h2 class="text-lg font-bold">💰 共同支出與即時分帳</h2>
-                <p class="text-xs text-pink-100 mt-1">自動幫 N 與 L 計算應付金額與結算差額！</p>
+                <h2 class="text-lg font-bold">💰 共同支出與即時分帳 (台幣/韓元)</h2>
+                <p class="text-xs text-pink-100 mt-1">支援台幣與韓元輸入，自動幫 N 與 L 計算應付金額與結算差額！</p>
                 <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
                     <div>
-                        <span class="text-xs text-pink-200 block">N 總支出 / 已付</span>
-                        <span id="total-n" class="text-xl font-bold">NT$ 9,858</span>
+                        <span class="text-xs text-pink-200 block">N 總支出 (TWD 等值)</span>
+                        <span id="total-n" class="text-xl font-bold">NT$ 0</span>
                     </div>
                     <div>
-                        <span class="text-xs text-pink-200 block">L 總支出 / 已付</span>
-                        <span id="total-l" class="text-xl font-bold">NT$ 7,358</span>
+                        <span class="text-xs text-pink-200 block">L 總支出 (TWD 等值)</span>
+                        <span id="total-l" class="text-xl font-bold">NT$ 0</span>
                     </div>
                 </div>
                 <div id="settle-summary" class="mt-4 bg-white/10 p-3 rounded-xl text-sm font-medium">
                     結算中...
                 </div>
+                <div class="text-[11px] text-pink-100 mt-2">💡 匯率參考設定：1 韓元 (KRW) = 0.024 台幣 (TWD) [即 1000₩ ≒ 24 NT$]</div>
             </div>
 
             <!-- Add Expense Form -->
@@ -275,18 +200,25 @@
                         <label class="block text-xs font-medium text-slate-600 mb-1">消費項目名稱</label>
                         <input type="text" id="exp-name" required placeholder="例如：計程車費、烤肉晚餐" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">金額 (台幣)</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="col-span-2">
+                            <label class="block text-xs font-medium text-slate-600 mb-1">金額數值</label>
                             <input type="number" id="exp-amount" required placeholder="0" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">誰先付的？</label>
-                            <select id="exp-payer" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
-                                <option value="N">N 先付</option>
-                                <option value="L">L 先付</option>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">幣別</label>
+                            <select id="exp-currency" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                <option value="TWD">TWD (台幣)</option>
+                                <option value="KRW">KRW (韓元)</option>
                             </select>
                         </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">誰先付的？</label>
+                        <select id="exp-payer" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="N">N 先付</option>
+                            <option value="L">L 先付</option>
+                        </select>
                     </div>
                     <button type="submit" class="w-full bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-pink-600 transition-colors shadow-sm">
                         新增記帳
@@ -303,134 +235,41 @@
             </div>
         </section>
 
-        <!-- TAB 4: SPOTS & CAFES -->
         <section id="tab-spots" class="tab-content space-y-6 hidden">
-            <h2 class="text-lg font-bold text-slate-800">☕ 咖啡廳與打卡景點口袋名單</h2>
-            <p class="text-xs text-slate-500">彙整所有精選咖啡廳與打卡點，已排入行程的項目均附上標記！</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">江南區</span>
-                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-circle-check text-green-500"></i> 已排行程 (D3)</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-base mt-2">Dalmatian (狎鷗亭羅德奧街)</h3>
-                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 首爾特別市江南區狎鷗亭路42街42</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-                        <a href="https://www.threads.com/share/E1EK3jpyj/" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline">Threads 介紹</a>
-                        <span class="text-xs text-slate-400">網美打卡必去</span>
-                    </div>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">☕ 咖啡廳與景點口袋名單</h2>
+                    <p class="text-xs text-slate-500">所有 9 間咖啡廳與各大景點完整收錄，附照片與地址，可依區域篩選並自由新增！</p>
                 </div>
+                <button onclick="openAddModal('spot')" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm flex items-center gap-2 transition-all shrink-0">
+                    <i class="fa-solid fa-plus"></i> 新增咖啡廳/景點
+                </button>
+            </div>
 
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">弘大 / 延南洞</span>
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-semibold">口袋名單</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-base mt-2">Cafe Layered 延南店</h3>
-                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 首爾市麻浦區城美山路161-4</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-                        <a href="https://www.instagram.com/p/DctAojBCYZo/" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline">IG 參考</a>
-                        <span class="text-xs text-slate-400">超人氣司康</span>
-                    </div>
+            <!-- Sub-tabs & Area Filter -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex space-x-2">
+                    <button onclick="switchSpotSubTab('cafes')" id="subbtn-cafes" class="spot-sub-btn px-4 py-2 rounded-xl text-xs font-bold bg-pink-500 text-white shadow-sm">咖啡廳 (9)</button>
+                    <button onclick="switchSpotSubTab('attractions')" id="subbtn-attractions" class="spot-sub-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600">景點 / 拍照點</button>
                 </div>
-
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">聖水洞</span>
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-semibold">口袋名單</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-base mt-2">터틀힙 성수 (Turtlehip)</h3>
-                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 聖水洞甜品咖啡街區 (近首爾林)</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-                        <span class="text-xs text-purple-600 font-semibold">聖水甜品咖啡廳</span>
-                        <span class="text-xs text-slate-400">特色甜點</span>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">龍山區</span>
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-semibold">口袋名單</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-base mt-2">Maha Hannam & 洞穴 Apex bar</h3>
-                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 龍山區東冰庫洞 21-2 / 漢江大路21街 17-13</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-                        <span class="text-xs text-purple-600 font-semibold">質感洞穴酒吧</span>
-                        <span class="text-xs text-slate-400">夜景氛圍</span>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full font-medium">鐘路區</span>
-                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-circle-check text-green-500"></i> 已排行程 (D3)</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-base mt-2">Hai Weat Ikseon (益善洞早午餐)</h3>
-                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 益善洞韓屋村內 (近鐘路三街站 6 號出口)</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-                        <a href="https://www.threads.com/share/E5ctBvpgm/" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline">Threads 介紹</a>
-                        <span class="text-xs text-slate-400">韓屋早午餐</span>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full font-medium">東廟/鐘路區</span>
-                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-circle-check text-green-500"></i> 已排行程 (D2)</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-base mt-2">Thomas Bakery (早午餐)</h3>
-                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 首爾特別市鐘路區崇인洞 202-14 (近東廟前站 3 號出口)</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-                        <a href="https://www.instagram.com/thomasbakery_/" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline">IG 參考</a>
-                        <span class="text-xs text-slate-400">人氣烘焙早午餐</span>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">聖水洞</span>
-                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-semibold">口袋名單</span>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-base mt-2">Super Coffee (MUSINSA BEAUTY旁)</h3>
-                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 聖水洞 MUSINSA BEAUTY 旁</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-                        <a href="https://www.threads.com/share/FEITsqAee/" target="_blank" class="text-xs text-pink-600 font-semibold hover:underline">Threads 推薦</a>
-                        <span class="text-xs text-slate-400">逛街必喝</span>
-                    </div>
+                <div>
+                    <select id="area-filter" onchange="renderSpots()" class="px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        <option value="all">全區域顯示</option>
+                        <option value="江南區">江南區 / 狎鷗亭</option>
+                        <option value="鐘路區">鐘路區 / 益善洞 / 東廟</option>
+                        <option value="弘大/延南洞">弘大 / 延南洞</option>
+                        <option value="聖水洞">聖水洞 / 首爾林</option>
+                        <option value="龍山區">龍山區 / 漢南洞</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-leaf text-amber-500"></i> 📍 銀杏 / 拍秋景景點</h3>
-                <div class="grid grid-cols-2 gap-3 text-sm text-slate-600">
-                    <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100">
-                        <strong>景福宮迎秋門</strong>
-                        <p class="text-xs text-slate-500 mt-1">宮牆與金黃銀杏絕景</p>
-                    </div>
-                    <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100">
-                        <strong>首爾林</strong>
-                        <p class="text-xs text-slate-500 mt-1">漫步賞楓拍美照聖地</p>
-                    </div>
-                </div>
+            <!-- Spots Container -->
+            <div id="spots-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Dynamic cards -->
             </div>
         </section>
 
-        <!-- TAB 5: MEDICAL -->
         <section id="tab-medical" class="tab-content space-y-6 hidden">
             <h2 class="text-lg font-bold text-slate-800">💄 醫美預約與口袋名單</h2>
 
@@ -462,49 +301,50 @@
             </div>
         </section>
 
-        <!-- TAB 6: SHOPPING & VIDEO -->
         <section id="tab-shopping" class="tab-content space-y-6 hidden">
-            <h2 class="text-lg font-bold text-slate-800">🛍️ 購物清單與 🎞️ 拍片企劃</h2>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-bag-shopping text-pink-500"></i> 想買清單 & 逛街地圖</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-600">
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <strong>首爾安國站</strong>
-                        <p class="text-xs text-slate-500 mt-1">新開韓屋 Urban Sophistication (特色手機殼)</p>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <strong>fwee 唇彩 / 彩妝</strong>
-                        <p class="text-xs text-slate-500 mt-1">熱門流行彩妝必買</p>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <strong>lilybyred 愛心腮紅</strong>
-                        <p class="text-xs text-slate-500 mt-1">L 色號 03, 08, 10 (膏狀質地)</p>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <strong>Ofra 打亮 & 造型痘痘貼</strong>
-                        <p class="text-xs text-slate-500 mt-1">精緻妝容必備小物</p>
-                    </div>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">🛍️ 購物清單與想買好物</h2>
+                    <p class="text-xs text-slate-500">依 L 清單與 N 清單獨立分類，隨時可新增想買項目！</p>
                 </div>
-                <div class="mt-4 pt-3 border-t border-slate-100">
-                    <a href="https://www.threads.com/share/FEITsqAee/" target="_blank" class="text-xs text-pink-600 font-semibold"><i class="fa-solid fa-heart"></i> 《首爾沒吃到會後悔》MUSINSA BEAUTY 旁 Super Coffee 推薦</a>
-                </div>
+                <button onclick="openAddModal('shopping')" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm flex items-center gap-2 transition-all shrink-0">
+                    <i class="fa-solid fa-plus"></i> 新增購物項目
+                </button>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-video text-purple-500"></i> 💡 拍片靈感與企劃參考</h3>
-                <ul class="space-y-2 text-sm text-slate-600">
-                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">📸 <strong>底片相機企劃</strong>：跟姊妹出國一人拍一台，記錄彼此獨特視角。</li>
-                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">💰 <strong>小資花費總攬</strong>：小資族去韓國花多少錢開箱。</li>
-                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">🍜 <strong>物價大挑戰</strong>：台幣 XXX 錢在韓國吃三餐。</li>
-                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">☕ <strong>咖啡廳懶人包</strong>：首爾必去 3 間咖啡廳特輯。</li>
-                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">👗 <strong>穿搭企劃</strong>：互相穿搭、幫對方搭一套、韓國買一套 & 4天穿搭轉場影片。</li>
-                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">🤝 <strong>品牌合作</strong>：L 的 0.22 皮夾合作紀錄。</li>
-                </ul>
+            <!-- Person Toggle -->
+            <div class="flex space-x-2">
+                <button onclick="switchShoppingPerson('L')" id="shopbtn-l" class="shop-person-btn px-5 py-2.5 rounded-xl text-sm font-bold bg-pink-500 text-white shadow-sm flex-1">👩 L 的購物清單</button>
+                <button onclick="switchShoppingPerson('N')" id="shopbtn-n" class="shop-person-btn px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 flex-1">👩 N 的購物清單</button>
+            </div>
+
+            <div id="shopping-container" class="space-y-4">
+                <!-- Dynamic Items -->
             </div>
         </section>
 
-        <!-- TAB 7: TOOLS & SUBWAY -->
+        <section id="tab-video" class="tab-content space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">🎞️ 拍片靈感與企劃參考</h2>
+                    <p class="text-xs text-slate-500">依 L 與 N 獨立分類拍片靈感，可隨時新增企劃想法！</p>
+                </div>
+                <button onclick="openAddModal('video')" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm flex items-center gap-2 transition-all shrink-0">
+                    <i class="fa-solid fa-plus"></i> 新增拍片企劃
+                </button>
+            </div>
+
+            <!-- Person Toggle -->
+            <div class="flex space-x-2">
+                <button onclick="switchVideoPerson('L')" id="vidbtn-l" class="vid-person-btn px-5 py-2.5 rounded-xl text-sm font-bold bg-purple-600 text-white shadow-sm flex-1">👩 L 的拍片企劃</button>
+                <button onclick="switchVideoPerson('N')" id="vidbtn-n" class="vid-person-btn px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 flex-1">👩 N 的拍片企劃</button>
+            </div>
+
+            <div id="video-container" class="space-y-4">
+                <!-- Dynamic Items -->
+            </div>
+        </section>
+
         <section id="tab-tools" class="tab-content space-y-6 hidden">
             <h2 class="text-lg font-bold text-slate-800">🚇 交通地鐵口攻略 & 叫外送教學</h2>
 
@@ -539,64 +379,27 @@
                     </div>
                 </div>
             </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-calendar-star text-amber-500"></i> 🍁 10月首爾重點活動</h3>
-                <ul class="space-y-2 text-sm text-slate-600">
-                    <li>✨ <strong>漢江無人機燈光秀</strong>：10/09、10/31 20:30 (蠶島漢江公園免費免預約)</li>
-                    <li>✨ <strong>首爾芒草節</strong>：10/17–10/23 (天空公園銀白色芒草夜景)</li>
-                    <li>✨ <strong>漢江秋季慶典</strong>：10/17–10/25 (水上體驗與戶外瑜珈)</li>
-                    <li>✨ <strong>首爾 BBQ 節</strong>：10/24–10/25 (蘭芝露營場免費入場烤肉)</li>
-                    <li>✨ <strong>貞洞夜行</strong>：10/29–10/31 (德壽宮石牆路歷史建築夜間開放)</li>
-                </ul>
-            </div>
         </section>
 
     </main>
 
-    <!-- Modal for Adding Itinerary Item -->
     <div id="add-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-slate-800 text-lg">✨ 新增行程項目</h3>
+                <h3 id="modal-title" class="font-bold text-slate-800 text-lg">✨ 新增項目</h3>
                 <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <form onsubmit="saveNewItineraryItem(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">選擇天數</label>
-                    <select id="new-item-day" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
-                        <option value="d1">D1 (10/22)</option>
-                        <option value="d2">D2 (10/23)</option>
-                        <option value="d3">D3 (10/24)</option>
-                        <option value="d4">D4 (10/25)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">活動時間 / 標籤</label>
-                    <input type="text" id="new-item-time" required placeholder="例如：14:00 - 15:30 或 下午行程" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">行程標題</label>
-                    <input type="text" id="new-item-title" required placeholder="例如：聖水洞潮牌咖啡廳" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">詳細地點與描述</label>
-                    <textarea id="new-item-desc" rows="3" required placeholder="地址或活動內容說明..." class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
-                </div>
-                <div class="flex space-x-2 pt-2">
-                    <button type="button" onclick="closeAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">取消</button>
-                    <button type="submit" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-pink-600 transition-colors shadow-sm">確認新增</button>
-                </div>
+            <form onsubmit="saveModalItem(event)" class="space-y-3" id="modal-form">
+                <!-- Populated dynamically based on type -->
             </form>
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             if(tabId === 'routes') {
-                document.getElementById('route-tab').classList.remove('hidden');
+                document.getElementById('tab-routes').classList.remove('hidden');
             } else {
                 document.getElementById('tab-' + tabId).classList.remove('hidden');
             }
@@ -640,8 +443,8 @@
         // Itinerary Data Store
         let itineraryData = {
             d1: [
-                { id: 1, time: "13:00 - 16:55 🛫", title: "抵達首爾 & Check-in", desc: "搭乘航班抵達仁川機場，前往東大門 D-Place 飯店 Check-in ＋ 放行李。" },
-                { id: 2, time: "D1 醫美療程", title: "明洞醫美：Ceramique Clinic", desc: "📍 首爾特別市中區明洞8街27, M-Plaza 4樓 (明洞站 6 號出口)\n💬 LINE: @302ueniw" },
+                { id: 1, time: "13:00 - 16:55", title: "抵達首爾 & Check-in", desc: "搭乘航班抵達仁川機場，前往東大門 D-Place 飯店 Check-in ＋ 放行李。" },
+                { id: 2, time: "D1 療程", title: "明洞醫美：Ceramique Clinic", desc: "📍 首爾特別市中區明洞8街27, M-Plaza 4樓 (明洞站 6 號出口)\n💬 LINE: @302ueniw" },
                 { id: 3, time: "當日晚上", title: "晚餐與漢江夜景", desc: "品嚐當地美食，隨後前往漢江邊散步、看風景逛逛。" }
             ],
             d2: [
@@ -657,7 +460,7 @@
             ],
             d4: [
                 { id: 1, time: "早上行程", title: "明洞 / 乙支路商圈 & 早午餐", desc: "參考資料：《漢娜不在家｜明洞行程懶人包》" },
-                { id: 2, time: "13:25 - 15:55 🛬", title: "仁川機場搭機返台", desc: "帶著滿滿戰利品與回憶快樂回家！" }
+                { id: 2, time: "13:25 - 15:55", title: "仁川機場搭機返台", desc: "帶著滿滿戰利品與回憶快樂回家！" }
             ]
         };
 
@@ -689,48 +492,19 @@
             });
         }
 
-        function openAddModal() {
-            document.getElementById('new-item-day').value = currentDay;
-            document.getElementById('add-modal').classList.remove('hidden');
-        }
-
-        function closeAddModal() {
-            document.getElementById('add-modal').classList.add('hidden');
-        }
-
-        function saveNewItineraryItem(e) {
-            e.preventDefault();
-            const day = document.getElementById('new-item-day').value;
-            const time = document.getElementById('new-item-time').value;
-            const title = document.getElementById('new-item-title').value;
-            const desc = document.getElementById('new-item-desc').value;
-
-            if(!itineraryData[day]) itineraryData[day] = [];
-            itineraryData[day].push({
-                id: Date.now(),
-                time,
-                title,
-                desc
-            });
-
-            document.getElementById('new-item-time').value = '';
-            document.getElementById('new-item-title').value = '';
-            document.getElementById('new-item-desc').value = '';
-            closeAddModal();
-            switchDay(day);
-        }
-
-        function deleteItineraryItem(day, id) {
-            itineraryData[day] = itineraryData[day].filter(item => item.id !== id);
-            renderItinerary();
-        }
-
-        // Split Calculator State & Logic
+        // Split Calculator State & Logic (Supports TWD & KRW with exchange rate ~0.024)
         let expenses = [
-            { id: 1, name: '機票 (N先付)', amount: 7358, payer: 'N' },
-            { id: 2, name: '住宿訂金 (N先付)', amount: 2500, payer: 'N' },
-            { id: 3, name: '機票 (L已給)', amount: 7358, payer: 'L' }
+            { id: 1, name: '機票 (N先付)', amount: 7358, currency: 'TWD', payer: 'N' },
+            { id: 2, name: '住宿訂金 (N先付)', amount: 2500, currency: 'TWD', payer: 'N' },
+            { id: 3, name: '機票 (L已給)', amount: 7358, currency: 'TWD', payer: 'L' }
         ];
+
+        const KRW_TO_TWD = 0.024;
+
+        function convertToTwd(amount, currency) {
+            if (currency === 'KRW') return amount * KRW_TO_TWD;
+            return Number(amount);
+        }
 
         function renderExpenses() {
             const listEl = document.getElementById('expense-list');
@@ -740,8 +514,11 @@
             let totalL = 0;
 
             expenses.forEach(exp => {
-                if (exp.payer === 'N') totalN += Number(exp.amount);
-                if (exp.payer === 'L') totalL += Number(exp.amount);
+                const twdVal = convertToTwd(exp.amount, exp.currency);
+                if (exp.payer === 'N') totalN += twdVal;
+                if (exp.payer === 'L') totalL += twdVal;
+
+                const displayStr = exp.currency === 'KRW' ? `₩ ${Number(exp.amount).toLocaleString()} (≒ NT$ ${Math.round(twdVal).toLocaleString()})` : `NT$ ${Number(exp.amount).toLocaleString()}`;
 
                 const item = document.createElement('div');
                 item.className = 'flex justify-between items-center bg-slate-50 p-3 rounded-xl text-sm';
@@ -751,15 +528,15 @@
                         <span class="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md ml-2">${exp.payer} 先付</span>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <span class="font-bold text-pink-600">NT$ ${Number(exp.amount).toLocaleString()}</span>
+                        <span class="font-bold text-pink-600">${displayStr}</span>
                         <button onclick="deleteExpense(${exp.id})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
                 listEl.appendChild(item);
             });
 
-            document.getElementById('total-n').innerText = `NT$ ${totalN.toLocaleString()}`;
-            document.getElementById('total-l').innerText = `NT$ ${totalL.toLocaleString()}`;
+            document.getElementById('total-n').innerText = `NT$ ${Math.round(totalN).toLocaleString()}`;
+            document.getElementById('total-l').innerText = `NT$ ${Math.round(totalL).toLocaleString()}`;
 
             const diff = totalN - totalL;
             const summaryEl = document.getElementById('settle-summary');
@@ -778,12 +555,14 @@
             e.preventDefault();
             const name = document.getElementById('exp-name').value;
             const amount = document.getElementById('exp-amount').value;
+            const currency = document.getElementById('exp-currency').value;
             const payer = document.getElementById('exp-payer').value;
 
             expenses.push({
                 id: Date.now(),
                 name,
                 amount,
+                currency,
                 payer
             });
 
@@ -797,10 +576,388 @@
             renderExpenses();
         }
 
+        // Spots Data Store (9 Cafes + Attractions with photos & area tags)
+        let spotSubTab = 'cafes'; // 'cafes' or 'attractions'
+        let spotsData = {
+            cafes: [
+                { id: 1, name: "Dalmatian (달마시안)", area: "江南區", desc: "狎鷗亭羅德奧街超高人氣網美噴泉咖啡廳", image: "https://placehold.co/600x400/fecdd3/881337?text=Dalmatian", link: "https://www.threads.com/share/E1EK3jpyj/", itinerary: true },
+                { id: 2, name: "Cafe Layered 延南店", area: "弘大/延南洞", desc: "超人氣司康與英式復古鄉村風咖啡廳", image: "https://placehold.co/600x400/e0e7ff/3730a3?text=Cafe+Layered", link: "https://www.instagram.com/p/DctAojBCYZo/", itinerary: false },
+                { id: 3, name: "터틀힙 성수 (Turtlehip)", area: "聖水洞", desc: "聖水洞特色甜品與蛋糕咖啡廳，近首爾林", image: "https://placehold.co/600x400/fed7aa/7c2d12?text=Turtlehip", link: "https://www.threads.com/share/D-Lhv1FLx/", itinerary: false },
+                { id: 4, name: "Maha Hannam", area: "龍山區", desc: "龍山區質感設計咖啡廳", image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Maha+Hannam", link: "http://naver.me/5h1Rp", itinerary: false },
+                { id: 5, name: "Hai Weat Ikseon", area: "鐘路區", desc: "益善洞韓屋村內的超人氣精緻早午餐", image: "https://placehold.co/600x400/ccfbf1/134e4a?text=Hai+Weat", link: "https://www.threads.com/share/E5ctBvpgm/", itinerary: true },
+                { id: 6, name: "Thomas Bakery", area: "鐘路區", desc: "東廟站人氣烘焙早午餐專賣店", image: "https://placehold.co/600x400/fae8ff/701a75?text=Thomas+Bakery", link: "https://www.instagram.com/thomasbakery_/", itinerary: true },
+                { id: 7, name: "Super Coffee", area: "弘大/延南洞", desc: "新開 MUSINSA BEAUTY 旁，逛街必喝！", image: "https://placehold.co/600x400/ccfbf1/0f766e?text=Super+Coffee", link: "https://www.threads.com/share/FEITsqAee/", itinerary: false },
+                { id: 8, name: "Apex bar (아펙스)", area: "龍山區", desc: "龍山解放村的特色洞穴酒吧與咖啡廳", image: "https://placehold.co/600x400/f3e8ff/6b21a8?text=Apex+Bar", link: "https://www.threads.com/share/CJ2u6m3obN/", itinerary: false },
+                { id: 9, name: "Point of View (聖水)", area: "聖水洞", desc: "聖水洞文青文具選品店與咖啡空間", image: "https://placehold.co/600x400/ffedd5/9a3412?text=Point+of+View", link: "#", itinerary: false }
+            ],
+            attractions: [
+                { id: 101, name: "景福宮迎秋門", area: "鐘路區", desc: "宮牆與金黃銀杏絕景，秋天Citywalk必去", image: "https://placehold.co/600x400/fef08a/713f12?text=Gyeongbokgung", link: "#", itinerary: true },
+                { id: 102, name: "首爾林 (Seoul Forest)", area: "聖水洞", desc: "漫步賞楓、拍美照與野餐的超大自然綠地", image: "https://placehold.co/600x400/dcfce7/166534?text=Seoul+Forest", link: "#", itinerary: true },
+                { id: 103, name: "東大門設計廣場 (DDP)", area: "鐘路區", desc: "流線型地標建築與夜市展覽", image: "https://placehold.co/600x400/e0f2fe/0369a1?text=DDP+Seoul", link: "#", itinerary: true },
+                { id: 104, name: "龍山解放村新興市場", area: "龍山區", desc: "充滿復古與文青改造氣息的特色市集", image: "https://placehold.co/600x400/fce7f3/831843?text=Haebangchon", link: "#", itinerary: false }
+            ]
+        };
+
+        function switchSpotSubTab(sub) {
+            spotSubTab = sub;
+            document.querySelectorAll('.spot-sub-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            document.getElementById('subbtn-' + sub).classList.remove('bg-slate-100', 'text-slate-600');
+            document.getElementById('subbtn-' + sub).classList.add('bg-pink-500', 'text-white', 'shadow-sm');
+            renderSpots();
+        }
+
+        function renderSpots() {
+            const container = document.getElementById('spots-container');
+            container.innerHTML = '';
+            const areaFilter = document.getElementById('area-filter').value;
+            const items = spotsData[spotSubTab] || [];
+
+            const filtered = items.filter(item => areaFilter === 'all' || item.area === areaFilter);
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-2 bg-white p-6 rounded-2xl text-center text-slate-400 text-sm">此區域目前沒有項目</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const badge = item.itinerary 
+                    ? `<span class="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-circle-check text-green-500"></i> 已排行程</span>`
+                    : `<span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">口袋名單</span>`;
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="h-40 w-full bg-slate-200 relative overflow-hidden">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                            <div class="absolute top-2 right-2">${badge}</div>
+                        </div>
+                        <div class="p-5">
+                            <span class="text-xs bg-purple-50 text-purple-600 px-2.5 py-0.5 rounded-full font-semibold">📍 ${item.area}</span>
+                            <h3 class="font-bold text-slate-800 text-base mt-2">${item.name}</h3>
+                            <p class="text-xs text-slate-500 mt-1">${item.desc}</p>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5 pt-2 border-t border-slate-100 flex justify-between items-center text-xs">
+                        <a href="${item.link}" target="_blank" class="text-purple-600 font-semibold hover:underline"><i class="fa-solid fa-link"></i> 相關連結 / 地圖</a>
+                        <button onclick="deleteSpot('${spotSubTab}', ${item.id})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Shopping List State & Logic (Separate L & N)
+        let shoppingPerson = 'L'; // 'L' or 'N'
+        let shoppingData = {
+            L: [
+                { id: 1, name: "lilybyred 愛心腮紅 (色號 03, 08, 10)", desc: "膏狀質地，超人氣顯色顯嫩", done: false },
+                { id: 2, name: "fwee 唇彩 / 彩妝", desc: "熱門流行韓系唇泥", done: false },
+                { id: 3, name: "Ofra 打亮", desc: "精緻妝容必備打亮小物", done: false }
+            ],
+            N: [
+                { id: 1, name: "Urban Sophistication 手機殼", desc: "安國站新開韓屋店特色手機殼", done: false },
+                { id: 2, name: "造型痘痘貼 / 雙眼皮貼", desc: "實用美妝小物採買", done: false }
+            ]
+        };
+
+        function switchShoppingPerson(person) {
+            shoppingPerson = person;
+            document.querySelectorAll('.shop-person-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            });
+            document.getElementById('shopbtn-' + person.toLowerCase()).classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            document.getElementById('shopbtn-' + person.toLowerCase()).classList.add('bg-pink-500', 'text-white', 'shadow-sm');
+            renderShopping();
+        }
+
+        function renderShopping() {
+            const container = document.getElementById('shopping-container');
+            container.innerHTML = '';
+            const items = shoppingData[shoppingPerson] || [];
+
+            if(items.length === 0) {
+                container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-slate-400 text-sm">${shoppingPerson} 目前沒有購物項目，點擊右上角新增吧！</div>`;
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between";
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onclick="toggleShopping(${item.id})" class="w-5 h-5 text-pink-500 rounded border-slate-300 focus:ring-pink-500">
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-800 ${item.done ? 'line-through text-slate-400' : ''}">${item.name}</h4>
+                            <p class="text-xs text-slate-500">${item.desc}</p>
+                        </div>
+                    </div>
+                    <button onclick="deleteShopping(${item.id})" class="text-slate-400 hover:text-red-500 p-2"><i class="fa-solid fa-trash-can"></i></button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleShopping(id) {
+            shoppingData[shoppingPerson] = shoppingData[shoppingPerson].map(i => i.id === id ? { ...i, done: !i.done } : i);
+            renderShopping();
+        }
+
+        function deleteShopping(id) {
+            shoppingData[shoppingPerson] = shoppingData[shoppingPerson].filter(i => i.id !== id);
+            renderShopping();
+        }
+
+        // Video Ideas State & Logic (Separate L & N)
+        let videoPerson = 'L'; // 'L' or 'N'
+        let videoData = {
+            L: [
+                { id: 1, name: "0.22 皮夾合作紀錄", desc: "品牌合作開箱影片企劃" },
+                { id: 2, name: "底片相機互相記錄企劃", desc: "跟姊妹出國一人拍一台，記錄彼此獨特視角" }
+            ],
+            N: [
+                { id: 1, name: "小資族去韓國花多少錢 / 花費總攬", desc: "開箱四天三夜實際花費總結" },
+                { id: 2, name: "台幣 XXX 錢在韓國吃三餐", desc: "物價大挑戰企劃影片" },
+                { id: 3, name: "首爾必去 3 間咖啡廳懶人包", desc: "精選質感咖啡廳特輯" },
+                { id: 4, name: "4天穿搭轉場影片", desc: "互相穿搭、幫對方搭一套、韓國買一套" }
+            ]
+        };
+
+        function switchVideoPerson(person) {
+            videoPerson = person;
+            document.querySelectorAll('.vid-person-btn').forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            });
+            document.getElementById('vidbtn-' + person.toLowerCase()).classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            document.getElementById('vidbtn-' + person.toLowerCase()).classList.add('bg-purple-600', 'text-white', 'shadow-sm');
+            renderVideo();
+        }
+
+        function renderVideo() {
+            const container = document.getElementById('video-container');
+            container.innerHTML = '';
+            const items = videoData[videoPerson] || [];
+
+            if(items.length === 0) {
+                container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-slate-400 text-sm">${videoPerson} 目前沒有拍片企劃，點擊右上角新增吧！</div>`;
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-purple-50/50 p-4 rounded-2xl shadow-sm border border-purple-100 flex items-center justify-between";
+                card.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">🎞️ ${item.name}</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">${item.desc}</p>
+                    </div>
+                    <button onclick="deleteVideo(${item.id})" class="text-slate-400 hover:text-red-500 p-2"><i class="fa-solid fa-trash-can"></i></button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function deleteVideo(id) {
+            videoData[videoPerson] = videoData[videoPerson].filter(i => i.id !== id);
+            renderVideo();
+        }
+
+        // Modal Handler for Additions
+        let currentModalType = '';
+        function openAddModal(type) {
+            currentModalType = type;
+            const modal = document.getElementById('add-modal');
+            const titleEl = document.getElementById('modal-title');
+            const formEl = document.getElementById('modal-form');
+            formEl.innerHTML = '';
+
+            if(type === 'itinerary') {
+                titleEl.innerText = "✨ 新增行程項目";
+                formEl.innerHTML = `
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">選擇天數</label>
+                        <select id="m-item-day" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="d1">D1 (10/22)</option>
+                            <option value="d2">D2 (10/23)</option>
+                            <option value="d3">D3 (10/24)</option>
+                            <option value="d4">D4 (10/25)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">活動時間</label>
+                        <input type="text" id="m-item-time" required placeholder="例如：14:00 - 15:30" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">行程標題</label>
+                        <input type="text" id="m-item-title" required placeholder="例如：聖水洞潮牌咖啡廳" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">詳細地點與描述</label>
+                        <textarea id="m-item-desc" rows="3" required placeholder="地址或活動內容說明..." class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+                    </div>
+                    <div class="flex space-x-2 pt-2">
+                        <button type="button" onclick="closeAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">取消</button>
+                        <button type="submit" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-pink-600 transition-colors shadow-sm">確認新增</button>
+                    </div>
+                `;
+            } else if(type === 'spot') {
+                titleEl.innerText = "✨ 新增咖啡廳或景點";
+                formEl.innerHTML = `
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">分類類型</label>
+                        <select id="m-spot-type" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="cafes">咖啡廳</option>
+                            <option value="attractions">景點 / 拍照點</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">區域</label>
+                        <select id="m-spot-area" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="江南區">江南區</option>
+                            <option value="鐘路區">鐘路區</option>
+                            <option value="弘大/延南洞">弘大/延南洞</option>
+                            <option value="聖水洞">聖水洞</option>
+                            <option value="龍山區">龍山區</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">名稱</label>
+                        <input type="text" id="m-spot-name" required placeholder="例如：特色咖啡廳" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">簡介說明</label>
+                        <input type="text" id="m-spot-desc" required placeholder="特色描述..." class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div class="flex space-x-2 pt-2">
+                        <button type="button" onclick="closeAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">取消</button>
+                        <button type="submit" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-pink-600 transition-colors shadow-sm">確認新增</button>
+                    </div>
+                `;
+            } else if(type === 'shopping') {
+                titleEl.innerText = "✨ 新增購物項目";
+                formEl.innerHTML = `
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">加入哪位清單？</label>
+                        <select id="m-shop-person" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="L">L 的購物清單</option>
+                            <option value="N">N 的購物清單</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">物品名稱</label>
+                        <input type="text" id="m-shop-name" required placeholder="例如：fwee 唇彩" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">詳細說明 / 色號</label>
+                        <input type="text" id="m-shop-desc" required placeholder="色號或購買地點..." class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div class="flex space-x-2 pt-2">
+                        <button type="button" onclick="closeAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">取消</button>
+                        <button type="submit" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-pink-600 transition-colors shadow-sm">確認新增</button>
+                    </div>
+                `;
+            } else if(type === 'video') {
+                titleEl.innerText = "✨ 新增拍片企劃";
+                formEl.innerHTML = `
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">加入哪位企劃？</label>
+                        <select id="m-vid-person" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="L">L 的拍片企劃</option>
+                            <option value="N">N 的拍片企劃</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">企劃標題</label>
+                        <input type="text" id="m-vid-name" required placeholder="例如：穿搭轉場影片" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">企劃內容說明</label>
+                        <input type="text" id="m-vid-desc" required placeholder="拍攝手法或主題說明..." class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div class="flex space-x-2 pt-2">
+                        <button type="button" onclick="closeAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">取消</button>
+                        <button type="submit" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-pink-600 transition-colors shadow-sm">確認新增</button>
+                    </div>
+                `;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+        }
+
+        function saveModalItem(e) {
+            e.preventDefault();
+            if(currentModalType === 'itinerary') {
+                const day = document.getElementById('m-item-day').value;
+                const time = document.getElementById('m-item-time').value;
+                const title = document.getElementById('m-item-title').value;
+                const desc = document.getElementById('m-item-desc').value;
+
+                if(!itineraryData[day]) itineraryData[day] = [];
+                itineraryData[day].push({ id: Date.now(), time, title, desc });
+                closeAddModal();
+                switchDay(day);
+            } else if(currentModalType === 'spot') {
+                const subType = document.getElementById('m-spot-type').value;
+                const area = document.getElementById('m-spot-area').value;
+                const name = document.getElementById('m-spot-name').value;
+                const desc = document.getElementById('m-spot-desc').value;
+
+                spotsData[subType].push({
+                    id: Date.now(),
+                    name,
+                    area,
+                    desc,
+                    image: `https://placehold.co/600x400/e2e8f0/475569?text=${encodeURIComponent(name)}`,
+                    link: "#",
+                    itinerary: false
+                });
+                closeAddModal();
+                switchSpotSubTab(subType);
+            } else if(currentModalType === 'shopping') {
+                const person = document.getElementById('m-shop-person').value;
+                const name = document.getElementById('m-shop-name').value;
+                const desc = document.getElementById('m-shop-desc').value;
+
+                shoppingData[person].push({ id: Date.now(), name, desc, done: false });
+                closeAddModal();
+                switchShoppingPerson(person);
+            } else if(currentModalType === 'video') {
+                const person = document.getElementById('m-vid-person').value;
+                const name = document.getElementById('m-vid-name').value;
+                const desc = document.getElementById('m-vid-desc').value;
+
+                videoData[person].push({ id: Date.now(), name, desc });
+                closeAddModal();
+                switchVideoPerson(person);
+            }
+        }
+
+        function deleteItineraryItem(day, id) {
+            itineraryData[day] = itineraryData[day].filter(item => item.id !== id);
+            renderItinerary();
+        }
+
+        function deleteSpot(sub, id) {
+            spotsData[sub] = spotsData[sub].filter(item => item.id !== id);
+            renderSpots();
+        }
+
         // Initialize on load
         window.onload = function() {
             renderItinerary();
             renderExpenses();
+            renderSpots();
+            renderShopping();
+            renderVideo();
         };
     </script>
 </body>
