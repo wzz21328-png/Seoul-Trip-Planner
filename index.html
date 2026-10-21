@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🇰🇷 GOGO 韓國首爾四天三夜智慧出遊軟體</title>
+    <title>🇰🇷 GOGO 韓國首爾3t4y </title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -93,10 +93,11 @@
             </div>
         </section>
 
+        <!-- TAB 2: ROUTES -->
         <section id="tab-routes" class="tab-content space-y-6 hidden">
             <div class="bg-gradient-to-r from-purple-600 to-pink-500 p-6 rounded-2xl text-white shadow-md">
                 <h2 class="text-lg font-bold"><i class="fa-solid fa-route"></i> 🗺️ 每日最佳化路線與景點指南</h2>
-                <p class="text-xs text-purple-100 mt-1">結合試算表詳細地址與地鐵口攻略，一鍵點擊 Naver/Google 導航不迷路！</p>
+                <p class="text-xs text-purple-100 mt-1">結合詳細地址與地鐵口攻略，一鍵點擊 Naver/Google 導航不迷路！</p>
             </div>
 
             <div class="flex space-x-2 overflow-x-auto pb-2">
@@ -172,10 +173,11 @@
             </div>
         </section>
 
+        <!-- TAB 3: SPLIT CALCULATOR -->
         <section id="tab-split" class="tab-content space-y-6 hidden">
             <div class="bg-gradient-to-r from-pink-500 to-purple-600 p-6 rounded-2xl text-white shadow-md">
                 <h2 class="text-lg font-bold">💰 共同支出與即時分帳 (台幣/韓元)</h2>
-                <p class="text-xs text-pink-100 mt-1">支援台幣與韓元輸入，自動幫 N 與 L 計算應付金額與結算差額！</p>
+                <p class="text-xs text-pink-100 mt-1">支援台幣與韓元輸入，自動換算並幫 N 與 L 計算應付金額與結算差額！</p>
                 <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
                     <div>
                         <span class="text-xs text-pink-200 block">N 總支出 (TWD 等值)</span>
@@ -189,7 +191,7 @@
                 <div id="settle-summary" class="mt-4 bg-white/10 p-3 rounded-xl text-sm font-medium">
                     結算中...
                 </div>
-                <div class="text-[11px] text-pink-100 mt-2">💡 匯率參考設定：1 韓元 (KRW) = 0.024 台幣 (TWD) [即 1000₩ ≒ 24 NT$]</div>
+                <div class="text-[11px] text-pink-100 mt-2">💡 參考匯率：1 韓元 (KRW) = 0.024 台幣 (TWD) [即 1000₩ ≒ 24 NT$]</div>
             </div>
 
             <!-- Add Expense Form -->
@@ -235,6 +237,7 @@
             </div>
         </section>
 
+        <!-- TAB 4: SPOTS & CAFES -->
         <section id="tab-spots" class="tab-content space-y-6 hidden">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
@@ -270,6 +273,7 @@
             </div>
         </section>
 
+        <!-- TAB 5: MEDICAL -->
         <section id="tab-medical" class="tab-content space-y-6 hidden">
             <h2 class="text-lg font-bold text-slate-800">💄 醫美預約與口袋名單</h2>
 
@@ -301,6 +305,7 @@
             </div>
         </section>
 
+        <!-- TAB 6: SHOPPING -->
         <section id="tab-shopping" class="tab-content space-y-6 hidden">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
@@ -323,6 +328,7 @@
             </div>
         </section>
 
+        <!-- TAB 7: VIDEO -->
         <section id="tab-video" class="tab-content space-y-6 hidden">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
@@ -345,6 +351,7 @@
             </div>
         </section>
 
+        <!-- TAB 8: TOOLS -->
         <section id="tab-tools" class="tab-content space-y-6 hidden">
             <h2 class="text-lg font-bold text-slate-800">🚇 交通地鐵口攻略 & 叫外送教學</h2>
 
@@ -576,7 +583,7 @@
             renderExpenses();
         }
 
-        // Spots Data Store (9 Cafes + Attractions with photos & area tags)
+        // Spots Data Store (All 9 Cafes + Attractions with photos & area tags)
         let spotSubTab = 'cafes'; // 'cafes' or 'attractions'
         let spotsData = {
             cafes: [
