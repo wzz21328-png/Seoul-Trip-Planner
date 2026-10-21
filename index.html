@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🇰🇷 GOGO 韓國首爾四天三夜智慧出遊軟體</title>
+    <title>🇰🇷 GOGO 韓國首爾4D3Y</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -31,7 +31,7 @@
         <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <i class="fa-solid fa-plane-departure text-2xl animate-bounce"></i>
-                <h1 class="text-xl font-bold tracking-wide">GOGO 韓國首爾 4天3夜</h1>
+                <h1 class="text-xl font-bold tracking-wide">GOGO 韓國首爾 4D3Y </h1>
             </div>
             <div class="text-xs sm:text-sm bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
                 10/22 (四) - 10/25 (日)
@@ -105,8 +105,8 @@
         <!-- TAB 2: ROUTES -->
         <section id="tab-routes" class="tab-content space-y-6 hidden">
             <div class="bg-gradient-to-r from-purple-600 to-pink-500 p-6 rounded-2xl text-white shadow-md">
-                <h2 class="text-lg font-bold"><i class="fa-solid fa-route"></i> 🗺️ 閨蜜首爾路線地圖</h2>
-                <p class="text-xs text-purple-100 mt-1">每天的行程變成一張可愛路線圖～想去哪站、下一站怎麼走，一眼就懂 💗</p>
+                <h2 class="text-lg font-bold"><i class="fa-solid fa-route"></i> 🗺️ 首爾路線地圖</h2>
+                <p class="text-xs text-purple-100 mt-1">每天的行程可愛路線圖～想去就ㄑ哪 💗</p>
             </div>
 
             <div class="flex space-x-2 overflow-x-auto pb-2">
@@ -1102,6 +1102,7 @@
 
         // Initialize on load
         window.onload = function() {
+            restoreApp();
             renderItinerary();
             renderExpenses();
             renderSpots();
