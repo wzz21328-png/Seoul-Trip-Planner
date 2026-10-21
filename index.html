@@ -81,23 +81,29 @@
       <div class="bg-white border border-pink-100 rounded-2xl shadow-sm p-3 text-sm">
         <div class="flex flex-wrap justify-between items-center gap-2">
           <div><strong class="text-pink-700">☁️ L / N 雲端同步</strong><span id="cloud-state" class="ml-2 text-xs text-slate-500">尚未連線 · 本機可照常使用</span></div>
-          <button type="button" onclick="toggleCloudSetup()" class="bg-pink-50 text-pink-700 font-semibold rounded-xl px-3 py-2">雲端設定 ⚙️</button>
+          <button type="button" onclick="toggleCloudSetup()" class="bg-pink-50 text-pink-700 font-semibold rounded-xl px-3 py-2">房間設定 ⚙️</button>
         </div>
-        <div id="cloud-setup" class="hidden mt-3 border-t pt-3 space-y-3 text-xs text-slate-600">
-          <p>使用 Firebase Realtime Database，同一個房間的 L、N 會即時同步。首次需要在 Firebase 控制台建立專案、啟用「匿名登入」與即時資料庫，並設定安全規則（下載頁附教學）。</p>
-          <label class="block font-semibold">Firebase 網頁設定（貼入 firebaseConfig JSON）
-            <textarea id="cloud-config" rows="5" class="mt-1 w-full border border-slate-200 rounded-xl p-2 font-mono text-xs" placeholder='{"apiKey":"...","authDomain":"...","databaseURL":"https://...","projectId":"...","appId":"..."}'></textarea>
-          </label>
-          <label class="block font-semibold">共同房間 ID（兩人必須相同；建議使用自動產生的隨機 ID）
-            <input id="cloud-room" type="text" class="mt-1 w-full border border-slate-200 rounded-xl p-2 text-xs" placeholder="按下產生新房間" />
-          </label>
+        <div id="cloud-setup" class="mt-3 border-t pt-3 space-y-3 text-xs text-slate-600">
+          <p>只要一個人建立房間，再把邀請連結傳給另一個人就好啦 💗</p>
           <div class="flex flex-wrap gap-2">
-            <button onclick="generateCloudRoom()" type="button" class="bg-slate-100 rounded-lg px-3 py-2 font-semibold">🔑 產生新房間</button>
-            <button onclick="connectGogoCloud()" type="button" class="bg-purple-600 text-white rounded-lg px-3 py-2 font-semibold">☁️ 連接雲端</button>
-            <button onclick="copyGogoInvite()" type="button" class="bg-pink-500 text-white rounded-lg px-3 py-2 font-semibold">🔗 複製 L / N 邀請連結</button>
+            <button onclick="createAndConnectGogoRoom()" type="button" class="bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold">🔑 建立共同房間並連線</button>
+            <button onclick="copyGogoInvite()" type="button" class="bg-pink-500 text-white rounded-lg px-4 py-2.5 font-semibold">🔗 複製 L / N 邀請連結</button>
             <button onclick="disconnectGogoCloud()" type="button" class="bg-slate-100 rounded-lg px-3 py-2">停止同步</button>
           </div>
-          <div id="cloud-detail" class="text-slate-500">先連線，再分享連結給另一位；邀請連結含房間金鑰，請勿公開貼在社群。</div>
+          <div class="rounded-xl bg-slate-50 p-3 space-y-2">
+            <div>共用房間：<strong id="cloud-room-preview">尚未建立</strong></div>
+            <div id="cloud-detail" class="text-slate-500">先按「建立共同房間並連線」，成功後再分享邀請連結。</div>
+          </div>
+          <details class="border border-slate-200 rounded-xl p-3">
+            <summary class="cursor-pointer font-semibold text-slate-500">進階設定（Firebase 連線有問題才需要）</summary>
+            <label class="block font-semibold mt-3">Firebase 網頁設定
+              <textarea id="cloud-config" rows="5" class="mt-1 w-full border border-slate-200 rounded-xl p-2 font-mono text-xs"></textarea>
+            </label>
+            <label class="block font-semibold mt-3">共同房間 ID
+              <input id="cloud-room" type="text" oninput="updateCloudRoomPreview()" class="mt-1 w-full border border-slate-200 rounded-xl p-2 text-xs" />
+            </label>
+            <button onclick="connectGogoCloud()" type="button" class="bg-slate-200 rounded-lg px-3 py-2 mt-2">手動重新連接</button>
+          </details>
         </div>
       </div>
     </section>
@@ -1448,6 +1454,27 @@
 
         // Shared cloud database: Firebase Anonymous Auth + Realtime Database.
         // The room token is the bearer secret. Share the invitation link privately.
+        const GOGO_DEFAULT_FIREBASE_CONFIG = {
+"apiKey":"AIzaSyBQMbzo29IOEPbUw8mFf2uSBRvIXNdcSIw",
+"authDomain":"seoul-trip-e47eb.firebaseapp.com",
+"databaseURL":"https://seoul-trip-e47eb-default-rtdb.firebaseio.com",
+"projectId":"seoul-trip-e47eb",
+"storageBucket":"seoul-trip-e47eb.firebasestorage.app",
+"messagingSenderId":"1074377437626",
+"appId":"1:1074377437626:web:ad274733b8a356bdd46d83"
+};
+        function updateCloudRoomPreview(){
+            const el=document.getElementById('cloud-room-preview');
+            if(el)el.textContent=document.getElementById('cloud-room')?.value?.trim()||'尚未建立';
+        }
+        async function createAndConnectGogoRoom(){
+            if(gogoCloud.ready && !confirm('目前已連接共同房間，要重新建立新房間嗎？新房間不會自動帶走舊房間的其他手機資料。')) return;
+            generateCloudRoom();
+            cloudState('正在建立並連線…');
+            const ok=await connectGogoCloud();
+            if(ok){cloudState('✓ 房間建立成功！按「複製 L / N 邀請連結」傳給另一位 💗');}
+        }
+        let gogoJoiningFromInvite=false;
         let gogoCloud = {ready:false, applying:false, off:null, timer:null, db:null, auth:null, ref:null, api:null, room:null, config:null, lastVersion:null};
         const CLOUD_SETTINGS_KEY='gogo_seoul_cloud_settings_v1';
         const CLOUD_INVITE_PREFIX='gogo=';
@@ -1459,17 +1486,38 @@
         function toggleCloudSetup(){document.getElementById('cloud-setup').classList.toggle('hidden');}
         function generateCloudRoom(){
             const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
-            document.getElementById('cloud-room').value=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+            document.getElementById('cloud-room').value=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');updateCloudRoomPreview();
         }
         function b64EncodeUnicode(s){return btoa(Array.from(new TextEncoder().encode(s),b=>String.fromCharCode(b)).join('')).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/g,'');}
         function b64DecodeUnicode(s){const binary=atob(s.replace(/-/g,'+').replace(/_/g,'/'));return new TextDecoder().decode(Uint8Array.from(binary,c=>c.charCodeAt(0)));}
+        // Accept both strict JSON and the JavaScript firebaseConfig snippet copied from Firebase.
+        // Parse only known string properties: never execute user-pasted JavaScript.
+        function parseGogoFirebaseConfig(raw){
+            const text=String(raw||'').trim();
+            if(!text)throw Error('請先貼上 Firebase 設定');
+            try{return JSON.parse(text);}catch(e){}
+            const keys=['apiKey','authDomain','databaseURL','projectId','storageBucket','messagingSenderId','appId','measurementId'];
+            const config={};
+            for(const key of keys){
+                const pattern=new RegExp('(?:["\\\']?'+key+'["\\\']?)\\s*:\\s*(["\\\'])(.*?)\\1','s');
+                const match=text.match(pattern);
+                if(match)config[key]=match[2];
+            }
+            if(!config.apiKey||!config.projectId||!config.databaseURL||!config.appId){
+                throw Error('Firebase 設定不完整，請從 Firebase「專案設定 → 網頁應用程式 → 設定」複製整段 firebaseConfig');
+            }
+            return config;
+        }
         function inviteSettings(){
-            const raw=document.getElementById('cloud-config').value;
-            return {config:JSON.parse(raw),room:document.getElementById('cloud-room').value.trim()};
+            const input=document.getElementById('cloud-config');
+            const config=parseGogoFirebaseConfig(input.value);
+            // Normalize back into readable JSON, so the user no longer sees syntax errors.
+            input.value=JSON.stringify(config,null,2);
+            return {config,room:document.getElementById('cloud-room').value.trim()};
         }
         async function copyGogoInvite(){
             try{
-                const settings=inviteSettings();if(!settings.room)throw Error('請先產生房間 ID');
+                const settings=inviteSettings();if(!gogoCloud.ready)throw Error('請先成功連線雲端，再複製邀請連結');if(!settings.room)throw Error('請先建立房間 ID');
                 const url=location.origin+location.pathname+location.search+'#'+CLOUD_INVITE_PREFIX+b64EncodeUnicode(JSON.stringify(settings));
                 if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(url);alert('分享連結複製好了！傳給 L／N 就可以加入同一間房間 💗');}
                 else prompt('複製這個邀請連結',url);
@@ -1539,7 +1587,10 @@
                     const local=appSnapshot();
                     const old=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
                     const changed=old && JSON.stringify(old)!==JSON.stringify(remote.data);
-                    if(changed && confirm('發現本機與雲端資料不同。\n按「確定」使用雲端資料（推薦）。\n按「取消」把本機資料上傳覆蓋雲端。')){
+                    if(gogoJoiningFromInvite){
+                        applyGogoCloudSnapshot(remote.data);
+                        gogoJoiningFromInvite=false;
+                    }else if(changed && confirm('發現本機與雲端資料不同。\n按「確定」使用雲端資料（推薦）。\n按「取消」把本機資料上傳覆蓋雲端。')){
                         applyGogoCloudSnapshot(remote.data);
                     }else if(changed){queueGogoCloudSave();}
                     else applyGogoCloudSnapshot(remote.data);
@@ -1556,7 +1607,9 @@
                     cloudState('✓ 已收到另一台裝置的更新');
                 },error=>cloudState('⚠ 同步監聽失敗：'+error.message,true));
                 cloudState('✓ 已連線 · 同一房間兩人可同步');
-            }catch(e){gogoCloud.ready=false;cloudState('⚠ 連線失敗：'+e.message,true);console.error(e);}
+                updateCloudRoomPreview();
+                return true;
+            }catch(e){gogoCloud.ready=false;cloudState('⚠ 連線失敗：'+e.message+'。請確認 Firebase 匿名登入、資料庫規則與進階設定。',true);console.error(e);return false;}
         }
         function disconnectGogoCloud(clearSettings=true){
             clearTimeout(gogoCloud.timer);gogoCloud.off?.();gogoCloud.ready=false;
@@ -1564,18 +1617,21 @@
         }
         function initializeGogoCloud(){
             try{
+                document.getElementById('cloud-config').value=JSON.stringify(GOGO_DEFAULT_FIREBASE_CONFIG,null,2);
                 const hash=location.hash.slice(1);
                 let settings=null;
                 if(hash.startsWith(CLOUD_INVITE_PREFIX)){
                     settings=JSON.parse(b64DecodeUnicode(hash.slice(CLOUD_INVITE_PREFIX.length)));
+                    gogoJoiningFromInvite=true;
                     // Room secret should not remain exposed in browser history after onboarding.
                     history.replaceState(null,'',location.pathname+location.search);
                 }else settings=JSON.parse(localStorage.getItem(CLOUD_SETTINGS_KEY)||'null');
                 if(settings?.config&&settings?.room){
                     document.getElementById('cloud-config').value=JSON.stringify(settings.config,null,2);
                     document.getElementById('cloud-room').value=settings.room;
+                    updateCloudRoomPreview();
                     connectGogoCloud();
-                }else{generateCloudRoom();cloudState('尚未連線 · 點「雲端設定」開始');}
+                }else{generateCloudRoom();cloudState('尚未連線 · 按「建立共同房間並連線」開始');}
             }catch(e){console.warn('雲端設定格式無法讀取',e);cloudState('尚未連線 · 請重新設定');}
         }
 
