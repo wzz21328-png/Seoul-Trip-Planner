@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇰🇷 GOGO 韓國首爾四天三夜智慧出遊軟體</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-plane-departure text-2xl animate-bounce"></i>
+                <h1 class="text-xl font-bold tracking-wide">GOGO 韓國首爾 4天3夜</h1>
+            </div>
+            <div class="text-xs sm:text-sm bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+                10/22 (四) - 10/25 (日)
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-white shadow-sm sticky top-16 z-40">
+        <div class="max-w-4xl mx-auto flex overflow-x-auto no-scrollbar py-2 px-2 space-x-1">
+            <button onclick="switchTab('itinerary')" id="btn-itinerary" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-pink-500 text-white transition-all shadow-sm flex flex-col items-center">
+                <i class="fa-solid fa-calendar-days mb-1"></i><span>行程</span>
+            </button>
+            <button onclick="switchTab('routes')" id="btn-routes" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
+                <i class="fa-solid fa-route mb-1"></i><span>路線規劃</span>
+            </button>
+            <button onclick="switchTab('split')" id="btn-split" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
+                <i class="fa-solid fa-wallet mb-1"></i><span>分帳</span>
+            </button>
+            <button onclick="switchTab('spots')" id="btn-spots" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
+                <i class="fa-solid fa-mug-hot mb-1"></i><span>景點</span>
+            </button>
+            <button onclick="switchTab('medical')" id="btn-medical" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
+                <i class="fa-solid fa-syringe mb-1"></i><span>醫美</span>
+            </button>
+            <button onclick="switchTab('shopping')" id="btn-shopping" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
+                <i class="fa-solid fa-bag-shopping mb-1"></i><span>購物</span>
+            </button>
+            <button onclick="switchTab('tools')" id="btn-tools" class="tab-btn flex-1 min-w-[70px] py-2 px-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex flex-col items-center">
+                <i class="fa-solid fa-compass mb-1"></i><span>地鐵/外送</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-6 flex-1 w-full mb-12">
+
+        <!-- TAB 1: ITINERARY -->
+        <section id="tab-itinerary" class="tab-content space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">🏨 住宿資訊：東大門 D-Place</h2>
+                    <p class="text-sm text-slate-500 mt-1">首爾特別市中區乙支路44街18-4 (18-1 Eulji-ro 44-gil)</p>
+                    <p class="text-xs text-pink-600 mt-1"><i class="fa-solid fa-train"></i> 東大門歷史文化公園站 2/4/5號線 12號出口 | 機場巴士 6001</p>
+                </div>
+                <a href="https://naver.me/xdIOeUhg" target="_blank" class="bg-pink-50 text-pink-600 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-pink-100 transition-colors flex items-center gap-1 shrink-0">
+                    <i class="fa-solid fa-map-location-dot"></i> Naver 導航
+                </a>
+            </div>
+
+            <!-- Day Selector & Add Button Bar -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div class="flex space-x-2 overflow-x-auto pb-2">
+                    <button onclick="switchDay('d1')" class="day-btn px-4 py-2 rounded-xl text-sm font-bold bg-pink-500 text-white shadow-sm whitespace-nowrap">D1 (10/22)</button>
+                    <button onclick="switchDay('d2')" class="day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D2 (10/23)</button>
+                    <button onclick="switchDay('d3')" class="day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D3 (10/24)</button>
+                    <button onclick="switchDay('d4')" class="day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D4 (10/25)</button>
+                </div>
+                <button onclick="openAddModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-plus"></i> 新增行程項目
+                </button>
+            </div>
+
+            <!-- Dynamic Itinerary Container -->
+            <div id="itinerary-container" class="space-y-4">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 2: ROUTE PLANNER -->
+        <section id="route-tab" class="tab-content space-y-6 hidden">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-500 p-6 rounded-2xl text-white shadow-md">
+                <h2 class="text-lg font-bold"><i class="fa-solid fa-route"></i> 🗺️ 每日最佳化路線與景點指南</h2>
+                <p class="text-xs text-purple-100 mt-1">結合試算表詳細地址與地鐵口攻略，一鍵點擊 Naver/Google 導航不迷路！</p>
+            </div>
+
+            <div class="flex space-x-2 overflow-x-auto pb-2">
+                <button onclick="switchRouteDay('rd1')" class="route-day-btn px-4 py-2 rounded-xl text-sm font-bold bg-pink-500 text-white shadow-sm whitespace-nowrap">D1 路線</button>
+                <button onclick="switchRouteDay('rd2')" class="route-day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D2 路線</button>
+                <button onclick="switchRouteDay('rd3')" class="route-day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D3 路線</button>
+                <button onclick="switchRouteDay('rd4')" class="route-day-btn px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">D4 路線</button>
+            </div>
+
+            <!-- Route Panels -->
+            <div id="route-rd1" class="route-panel space-y-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h3 class="font-bold text-slate-800 text-base">Day 1：東大門出發 ➡️ 明洞醫美 ➡️ 漢江夜景</h3>
+                        <span class="text-xs bg-pink-50 text-pink-600 px-3 py-1 rounded-full font-bold">總交通約 30 分鐘</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">東大門 D-Place 飯店 Check-in</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 首爾特別市中區乙支路44街18-4 | 🚇 東大門歷史文化公園站 12號出口</p>
+                                <a href="https://naver.me/xdIOeUhg" target="_blank" class="text-xs text-pink-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-map-location-dot"></i> Naver 導航</a>
+                            </div>
+                        </div>
+                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 地鐵 4 號線 (約 10 分鐘)</div>
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">明洞 Ceramique Clinic 醫美</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 首爾特別市中區明洞8街27, M-Plaza 4樓 | 🚇 明洞站 6 號出口</p>
+                                <a href="https://share.google/ra9rAhzFNhDfiIeCo" target="_blank" class="text-xs text-pink-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-map-location-dot"></i> 地點導航</a>
+                            </div>
+                        </div>
+                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 晚餐與移動</div>
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">漢江公園散步看夜景</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 推薦汝矣島或盤浦漢江公園感受秋夜浪漫</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="route-rd2" class="route-panel space-y-4 hidden">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h3 class="font-bold text-slate-800 text-base">Day 2：東廟早午餐 ➡️ 景福宮/北村 ➡️ 聖水洞/漢南洞 ➡️ DDP</h3>
+                        <span class="text-xs bg-purple-50 text-purple-600 px-3 py-1 rounded-full font-bold">文青散步 & 網美打卡線</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">Thomas Bakery 早午餐</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 首爾特別市鐘路區崇인洞 202-14 | 🚇 東廟前站 3 號出口</p>
+                                <a href="https://www.instagram.com/thomasbakery_/" target="_blank" class="text-xs text-purple-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-camera"></i> IG 參考</a>
+                            </div>
+                        </div>
+                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 地鐵 3 號線</div>
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">景福宮 & 北村韓屋村 Citywalk</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 景福宮站 5 號出口 / 迎秋門拍秋景銀杏</p>
+                            </div>
+                        </div>
+                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 地鐵 2 號線</div>
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">聖水洞 & 漢南洞逛街血拼</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 聖水站 / 漢南洞一帶潮牌與咖啡廳</p>
+                            </div>
+                        </div>
+                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 回東大門</div>
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">東大門設計廣場 (DDP) 夜市</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 飯店步行即可抵達</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="route-rd3" class="route-panel space-y-4 hidden">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h3 class="font-bold text-slate-800 text-base">Day 3：益善洞早午餐 ➡️ 江南醫美 (16:00) ➡️ 樂天超市</h3>
+                        <span class="text-xs bg-pink-50 text-pink-600 px-3 py-1 rounded-full font-bold">精緻醫美與掃貨線</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">Hai Weat Ikseon 益善洞早午餐</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 益善洞韓屋村內 | 🚇 鐘路三街站 6 號出口</p>
+                                <a href="https://www.threads.com/share/E5ctBvpgm/" target="_blank" class="text-xs text-purple-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-heart"></i> Threads 介紹</a>
+                            </div>
+                        </div>
+                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 地鐵 3 號線直達江南</div>
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">江南 歐爾塔醫院 (ORTA) 新館</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 瑞草區江南大路 447 南首爾大廈 7層 | 16:00 預約 (需拍影片)</p>
+                                <a href="https://maps.app.goo.gl/aEBuvjEabVunwi9N9" target="_blank" class="text-xs text-pink-600 font-semibold mt-1 inline-block"><i class="fa-solid fa-map-location-dot"></i> Google 地圖導航</a>
+                            </div>
+                        </div>
+                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 江南商圈</div>
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">樂天超市掃貨零食伴手禮</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 江南或首爾站採買</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="route-rd4" class="route-panel space-y-4 hidden">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h3 class="font-bold text-slate-800 text-base">Day 4：明洞乙支路早午餐 ➡️ 機場返台</h3>
+                        <span class="text-xs bg-purple-50 text-purple-600 px-3 py-1 rounded-full font-bold">輕鬆返程線</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">明洞 / 乙支路商圈逛街 & 早午餐</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">📍 參考《漢娜不在家｜明洞行程懶人包》</p>
+                            </div>
+                        </div>
+                        <div class="text-center text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> 機場快線 / 機場巴士</div>
+                        <div class="flex items-start space-x-3 bg-slate-50 p-3 rounded-xl">
+                            <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-800">仁川機場搭機返台 (13:25 - 15:55)</h4>
+                                <p class="text-xs text-slate-500 mt-0.5">🛬 帶滿滿戰利品回家</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: SPLIT CALCULATOR -->
+        <section id="tab-split" class="tab-content space-y-6 hidden">
+            <div class="bg-gradient-to-r from-pink-500 to-purple-600 p-6 rounded-2xl text-white shadow-md">
+                <h2 class="text-lg font-bold">💰 共同支出與即時分帳</h2>
+                <p class="text-xs text-pink-100 mt-1">自動幫 N 與 L 計算應付金額與結算差額！</p>
+                <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
+                    <div>
+                        <span class="text-xs text-pink-200 block">N 總支出 / 已付</span>
+                        <span id="total-n" class="text-xl font-bold">NT$ 9,858</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-pink-200 block">L 總支出 / 已付</span>
+                        <span id="total-l" class="text-xl font-bold">NT$ 7,358</span>
+                    </div>
+                </div>
+                <div id="settle-summary" class="mt-4 bg-white/10 p-3 rounded-xl text-sm font-medium">
+                    結算中...
+                </div>
+            </div>
+
+            <!-- Add Expense Form -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-4"><i class="fa-solid fa-circle-plus text-pink-500"></i> 新增共同記帳項目</h3>
+                <form id="expense-form" onsubmit="addExpense(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">消費項目名稱</label>
+                        <input type="text" id="exp-name" required placeholder="例如：計程車費、烤肉晚餐" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">金額 (台幣)</label>
+                            <input type="number" id="exp-amount" required placeholder="0" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">誰先付的？</label>
+                            <select id="exp-payer" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                <option value="N">N 先付</option>
+                                <option value="L">L 先付</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-pink-600 transition-colors shadow-sm">
+                        新增記帳
+                    </button>
+                </form>
+            </div>
+
+            <!-- Expense List -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-3">📜 記帳明細列表</h3>
+                <div id="expense-list" class="space-y-2">
+                    <!-- Dynamic Items -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: SPOTS & CAFES -->
+        <section id="tab-spots" class="tab-content space-y-6 hidden">
+            <h2 class="text-lg font-bold text-slate-800">☕ 咖啡廳與打卡景點口袋名單</h2>
+            <p class="text-xs text-slate-500">彙整所有精選咖啡廳與打卡點，已排入行程的項目均附上標記！</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">江南區</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-circle-check text-green-500"></i> 已排行程 (D3)</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mt-2">Dalmatian (狎鷗亭羅德奧街)</h3>
+                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 首爾特別市江南區狎鷗亭路42街42</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <a href="https://www.threads.com/share/E1EK3jpyj/" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline">Threads 介紹</a>
+                        <span class="text-xs text-slate-400">網美打卡必去</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">弘大 / 延南洞</span>
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-semibold">口袋名單</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mt-2">Cafe Layered 延南店</h3>
+                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 首爾市麻浦區城美山路161-4</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <a href="https://www.instagram.com/p/DctAojBCYZo/" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline">IG 參考</a>
+                        <span class="text-xs text-slate-400">超人氣司康</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">聖水洞</span>
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-semibold">口袋名單</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mt-2">터틀힙 성수 (Turtlehip)</h3>
+                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 聖水洞甜品咖啡街區 (近首爾林)</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-xs text-purple-600 font-semibold">聖水甜品咖啡廳</span>
+                        <span class="text-xs text-slate-400">特色甜點</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">龍山區</span>
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-semibold">口袋名單</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mt-2">Maha Hannam & 洞穴 Apex bar</h3>
+                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 龍山區東冰庫洞 21-2 / 漢江大路21街 17-13</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-xs text-purple-600 font-semibold">質感洞穴酒吧</span>
+                        <span class="text-xs text-slate-400">夜景氛圍</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full font-medium">鐘路區</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-circle-check text-green-500"></i> 已排行程 (D3)</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mt-2">Hai Weat Ikseon (益善洞早午餐)</h3>
+                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 益善洞韓屋村內 (近鐘路三街站 6 號出口)</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <a href="https://www.threads.com/share/E5ctBvpgm/" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline">Threads 介紹</a>
+                        <span class="text-xs text-slate-400">韓屋早午餐</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full font-medium">東廟/鐘路區</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-circle-check text-green-500"></i> 已排行程 (D2)</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mt-2">Thomas Bakery (早午餐)</h3>
+                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 首爾特別市鐘路區崇인洞 202-14 (近東廟前站 3 號出口)</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <a href="https://www.instagram.com/thomasbakery_/" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline">IG 參考</a>
+                        <span class="text-xs text-slate-400">人氣烘焙早午餐</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">聖水洞</span>
+                            <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-semibold">口袋名單</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mt-2">Super Coffee (MUSINSA BEAUTY旁)</h3>
+                        <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 聖水洞 MUSINSA BEAUTY 旁</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <a href="https://www.threads.com/share/FEITsqAee/" target="_blank" class="text-xs text-pink-600 font-semibold hover:underline">Threads 推薦</a>
+                        <span class="text-xs text-slate-400">逛街必喝</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-leaf text-amber-500"></i> 📍 銀杏 / 拍秋景景點</h3>
+                <div class="grid grid-cols-2 gap-3 text-sm text-slate-600">
+                    <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100">
+                        <strong>景福宮迎秋門</strong>
+                        <p class="text-xs text-slate-500 mt-1">宮牆與金黃銀杏絕景</p>
+                    </div>
+                    <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100">
+                        <strong>首爾林</strong>
+                        <p class="text-xs text-slate-500 mt-1">漫步賞楓拍美照聖地</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: MEDICAL -->
+        <section id="tab-medical" class="tab-content space-y-6 hidden">
+            <h2 class="text-lg font-bold text-slate-800">💄 醫美預約與口袋名單</h2>
+
+            <div class="space-y-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                    <span class="text-xs bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full font-medium">D1 (10/22)</span>
+                    <h3 class="font-bold text-slate-800 text-base mt-2">明洞 Ceramique Clinic</h3>
+                    <p class="text-sm text-slate-600 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 首爾特別市中區明洞8街27, M-Plaza 4樓 (明洞站 6 號出口)</p>
+                    <p class="text-xs text-slate-500 mt-2">💬 LINE: @302ueniw</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-l-4 border-l-purple-500">
+                    <span class="text-xs bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full font-medium">D3 (10/24) 預約 16:00 🎥 (需拍影片)</span>
+                    <h3 class="font-bold text-slate-800 text-base mt-2">江南 歐爾塔醫院 (ORTA) 新館</h3>
+                    <p class="text-sm text-slate-600 mt-1"><i class="fa-solid fa-location-dot text-pink-500"></i> 瑞草區江南大路 447 南首爾大廈 7層 (新論峴站 7 號出口步行 2 分鐘)</p>
+                    <a href="https://maps.app.goo.gl/aEBuvjEabVunwi9N9" target="_blank" class="text-xs text-pink-600 font-semibold mt-2 inline-block"><i class="fa-solid fa-map-location-dot"></i> Google 地圖導航</a>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 text-sm mb-3">💡 脆友精選不踩雷醫美口袋名單</h3>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li class="bg-slate-50 p-3 rounded-xl"><strong>1. SERENE (聖水洞)</strong>：一對一非流水線，金世琳院長親自面診，小資精緻路線。</li>
+                        <li class="bg-slate-50 p-3 rounded-xl"><strong>2. UMI (明洞)</strong>：地理位置極佳，CP值高，基礎保養與水光拉提超快。</li>
+                        <li class="bg-slate-50 p-3 rounded-xl"><strong>3. GOLD J (江南)</strong>：抗衰實力派，主打高階玻尿酸填充與面部抗衰。</li>
+                        <li class="bg-slate-50 p-3 rounded-xl"><strong>4. ELVIA (江南)</strong>：綜合皮膚管理，價格透明無隱藏消費，怕痛友善。</li>
+                        <li class="bg-slate-50 p-3 rounded-xl"><strong>5. Reyou (狎鷗亭)</strong>：瑞藍高級指導導師 1v1 親診，韓國女生與主播圈愛店。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: SHOPPING & VIDEO -->
+        <section id="tab-shopping" class="tab-content space-y-6 hidden">
+            <h2 class="text-lg font-bold text-slate-800">🛍️ 購物清單與 🎞️ 拍片企劃</h2>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-bag-shopping text-pink-500"></i> 想買清單 & 逛街地圖</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-600">
+                    <div class="bg-slate-50 p-3 rounded-xl">
+                        <strong>首爾安國站</strong>
+                        <p class="text-xs text-slate-500 mt-1">新開韓屋 Urban Sophistication (特色手機殼)</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl">
+                        <strong>fwee 唇彩 / 彩妝</strong>
+                        <p class="text-xs text-slate-500 mt-1">熱門流行彩妝必買</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl">
+                        <strong>lilybyred 愛心腮紅</strong>
+                        <p class="text-xs text-slate-500 mt-1">L 色號 03, 08, 10 (膏狀質地)</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl">
+                        <strong>Ofra 打亮 & 造型痘痘貼</strong>
+                        <p class="text-xs text-slate-500 mt-1">精緻妝容必備小物</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-100">
+                    <a href="https://www.threads.com/share/FEITsqAee/" target="_blank" class="text-xs text-pink-600 font-semibold"><i class="fa-solid fa-heart"></i> 《首爾沒吃到會後悔》MUSINSA BEAUTY 旁 Super Coffee 推薦</a>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-video text-purple-500"></i> 💡 拍片靈感與企劃參考</h3>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">📸 <strong>底片相機企劃</strong>：跟姊妹出國一人拍一台，記錄彼此獨特視角。</li>
+                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">💰 <strong>小資花費總攬</strong>：小資族去韓國花多少錢開箱。</li>
+                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">🍜 <strong>物價大挑戰</strong>：台幣 XXX 錢在韓國吃三餐。</li>
+                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">☕ <strong>咖啡廳懶人包</strong>：首爾必去 3 間咖啡廳特輯。</li>
+                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">👗 <strong>穿搭企劃</strong>：互相穿搭、幫對方搭一套、韓國買一套 & 4天穿搭轉場影片。</li>
+                    <li class="bg-purple-50/50 p-3 rounded-xl border border-purple-100">🤝 <strong>品牌合作</strong>：L 的 0.22 皮夾合作紀錄。</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TAB 7: TOOLS & SUBWAY -->
+        <section id="tab-tools" class="tab-content space-y-6 hidden">
+            <h2 class="text-lg font-bold text-slate-800">🚇 交通地鐵口攻略 & 叫外送教學</h2>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-2"><i class="fa-solid fa-motorcycle text-pink-500"></i> 韓國叫外送教學 (배달의민족)</h3>
+                <p class="text-xs text-slate-500 mb-3">不用韓國電話與實名認證，飯店宵夜輕鬆叫！</p>
+                <ol class="list-decimal list-inside space-y-1 text-sm text-slate-600 bg-slate-50 p-3 rounded-xl">
+                    <li>下載《배달의민족》APP（內建中文）。</li>
+                    <li>輸入住宿地址並備註房號（可用 Papago 翻譯）。</li>
+                    <li>搭配翻譯選餐，配送選一般或快速。</li>
+                    <li>登入時按 ❌ 跳過註冊，或用 Google 帳號登入。</li>
+                    <li>手動取消不需要的小菜或餐具。</li>
+                    <li>Google 登入後勾選同意即可。</li>
+                    <li>使用海外信用卡、Apple Pay 結帳等送達！</li>
+                </ol>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-train-subway text-purple-500"></i> 首爾熱門地鐵口攻略</h3>
+                <div class="space-y-3 text-sm text-slate-600">
+                    <div class="bg-slate-50 p-3 rounded-xl">
+                        <strong>🚇 弘大 (2號線)</strong>
+                        <p class="text-xs text-slate-500 mt-1">3號口通延南洞；4號口 AK& 百貨；8號口 Olive Young；9號口正門與街頭表演。<br><em>手扶梯：3/4口 ｜ 直梯：8口</em></p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl">
+                        <strong>🚇 明洞 (4號線)</strong>
+                        <p class="text-xs text-slate-500 mt-1">3號口南山纜車/首爾塔；6號口明洞主街；7號口主商圈（帶行李必走）。<br><em>手扶梯：1/3/7口 ｜ 直梯：1口</em></p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl">
+                        <strong>🚇 聖水站 (2號線)</strong>
+                        <p class="text-xs text-slate-500 mt-1">1號口 Point of View；2號口咖啡街；4號口最大 Olive Young。<br><em>手扶梯：1/2/3/4口 ｜ 直梯：1/4口</em></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-calendar-star text-amber-500"></i> 🍁 10月首爾重點活動</h3>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li>✨ <strong>漢江無人機燈光秀</strong>：10/09、10/31 20:30 (蠶島漢江公園免費免預約)</li>
+                    <li>✨ <strong>首爾芒草節</strong>：10/17–10/23 (天空公園銀白色芒草夜景)</li>
+                    <li>✨ <strong>漢江秋季慶典</strong>：10/17–10/25 (水上體驗與戶外瑜珈)</li>
+                    <li>✨ <strong>首爾 BBQ 節</strong>：10/24–10/25 (蘭芝露營場免費入場烤肉)</li>
+                    <li>✨ <strong>貞洞夜行</strong>：10/29–10/31 (德壽宮石牆路歷史建築夜間開放)</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal for Adding Itinerary Item -->
+    <div id="add-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-slate-800 text-lg">✨ 新增行程項目</h3>
+                <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="saveNewItineraryItem(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">選擇天數</label>
+                    <select id="new-item-day" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        <option value="d1">D1 (10/22)</option>
+                        <option value="d2">D2 (10/23)</option>
+                        <option value="d3">D3 (10/24)</option>
+                        <option value="d4">D4 (10/25)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">活動時間 / 標籤</label>
+                    <input type="text" id="new-item-time" required placeholder="例如：14:00 - 15:30 或 下午行程" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">行程標題</label>
+                    <input type="text" id="new-item-title" required placeholder="例如：聖水洞潮牌咖啡廳" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">詳細地點與描述</label>
+                    <textarea id="new-item-desc" rows="3" required placeholder="地址或活動內容說明..." class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+                </div>
+                <div class="flex space-x-2 pt-2">
+                    <button type="button" onclick="closeAddModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">取消</button>
+                    <button type="submit" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-pink-600 transition-colors shadow-sm">確認新增</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            if(tabId === 'routes') {
+                document.getElementById('route-tab').classList.remove('hidden');
+            } else {
+                document.getElementById('tab-' + tabId).classList.remove('hidden');
+            }
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
+                activeBtn.classList.add('bg-pink-500', 'text-white', 'shadow-sm');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        let currentDay = 'd1';
+        function switchDay(dayId) {
+            currentDay = dayId;
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            });
+            event.target.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            event.target.classList.add('bg-pink-500', 'text-white', 'shadow-sm');
+            renderItinerary();
+        }
+
+        function switchRouteDay(rdId) {
+            document.querySelectorAll('.route-panel').forEach(el => el.classList.add('hidden'));
+            document.getElementById('route-' + rdId).classList.remove('hidden');
+
+            document.querySelectorAll('.route-day-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            });
+            event.target.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            event.target.classList.add('bg-pink-500', 'text-white', 'shadow-sm');
+        }
+
+        // Itinerary Data Store
+        let itineraryData = {
+            d1: [
+                { id: 1, time: "13:00 - 16:55 🛫", title: "抵達首爾 & Check-in", desc: "搭乘航班抵達仁川機場，前往東大門 D-Place 飯店 Check-in ＋ 放行李。" },
+                { id: 2, time: "D1 醫美療程", title: "明洞醫美：Ceramique Clinic", desc: "📍 首爾特別市中區明洞8街27, M-Plaza 4樓 (明洞站 6 號出口)\n💬 LINE: @302ueniw" },
+                { id: 3, time: "當日晚上", title: "晚餐與漢江夜景", desc: "品嚐當地美食，隨後前往漢江邊散步、看風景逛逛。" }
+            ],
+            d2: [
+                { id: 1, time: "10:00 - 19:00", title: "早午餐：Thomas Bakery", desc: "📍 首爾特別市鐘路區崇인洞 202-14 (近東廟前站 3 號出口)" },
+                { id: 2, time: "白天的行程", title: "景福宮、北村韓屋村、弘大", desc: "📍 景福宮地址：首爾特別市鐘路區社稷路 161 (景福宮站 5 號出口)" },
+                { id: 3, time: "下午時段", title: "聖水洞逛街買東西 & 漢南洞尋寶", desc: "網美咖啡與潮牌服飾盡情拍照血拼。" },
+                { id: 4, time: "晚上", title: "東大門設計廣場 (DDP) 夜市", desc: "晚上 DDP 開逛賞夜景。" }
+            ],
+            d3: [
+                { id: 1, time: "上午時段", title: "早午餐/咖啡廳：Hai Weat Ikseon", desc: "📍 益善洞韓屋村內 (近鐘路三街站 6 號出口)" },
+                { id: 2, time: "16:00 預約", title: "江南醫美：歐爾塔醫院 (ORTA) 新館 (需拍影片)", desc: "📍 瑞草區江南大路 447 南首爾大廈 7層 (新論峴站 7 號出口步行 2 分鐘)" },
+                { id: 3, time: "傍晚/晚上", title: "樂天超市買零食 & 江南自由逛街", desc: "掃貨伴手禮與零食。" }
+            ],
+            d4: [
+                { id: 1, time: "早上行程", title: "明洞 / 乙支路商圈 & 早午餐", desc: "參考資料：《漢娜不在家｜明洞行程懶人包》" },
+                { id: 2, time: "13:25 - 15:55 🛬", title: "仁川機場搭機返台", desc: "帶著滿滿戰利品與回憶快樂回家！" }
+            ]
+        };
+
+        function renderItinerary() {
+            const container = document.getElementById('itinerary-container');
+            container.innerHTML = '';
+            const items = itineraryData[currentDay] || [];
+
+            if(items.length === 0) {
+                container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-slate-400 text-sm">這一天還沒有新增行程，點擊右上角「新增行程項目」來加入吧！</div>`;
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative pl-8 border-l-4 border-l-pink-500 flex justify-between items-start";
+                card.innerHTML = `
+                    <span class="absolute -left-3 top-5 w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold">${index + 1}</span>
+                    <div class="flex-1 pr-4">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-slate-800 text-base">${item.title}</h3>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">${item.time}</span>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-2 whitespace-pre-line">${item.desc}</p>
+                    </div>
+                    <button onclick="deleteItineraryItem('${currentDay}', ${item.id})" class="text-slate-400 hover:text-red-500 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openAddModal() {
+            document.getElementById('new-item-day').value = currentDay;
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+        }
+
+        function saveNewItineraryItem(e) {
+            e.preventDefault();
+            const day = document.getElementById('new-item-day').value;
+            const time = document.getElementById('new-item-time').value;
+            const title = document.getElementById('new-item-title').value;
+            const desc = document.getElementById('new-item-desc').value;
+
+            if(!itineraryData[day]) itineraryData[day] = [];
+            itineraryData[day].push({
+                id: Date.now(),
+                time,
+                title,
+                desc
+            });
+
+            document.getElementById('new-item-time').value = '';
+            document.getElementById('new-item-title').value = '';
+            document.getElementById('new-item-desc').value = '';
+            closeAddModal();
+            switchDay(day);
+        }
+
+        function deleteItineraryItem(day, id) {
+            itineraryData[day] = itineraryData[day].filter(item => item.id !== id);
+            renderItinerary();
+        }
+
+        // Split Calculator State & Logic
+        let expenses = [
+            { id: 1, name: '機票 (N先付)', amount: 7358, payer: 'N' },
+            { id: 2, name: '住宿訂金 (N先付)', amount: 2500, payer: 'N' },
+            { id: 3, name: '機票 (L已給)', amount: 7358, payer: 'L' }
+        ];
+
+        function renderExpenses() {
+            const listEl = document.getElementById('expense-list');
+            listEl.innerHTML = '';
+            
+            let totalN = 0;
+            let totalL = 0;
+
+            expenses.forEach(exp => {
+                if (exp.payer === 'N') totalN += Number(exp.amount);
+                if (exp.payer === 'L') totalL += Number(exp.amount);
+
+                const item = document.createElement('div');
+                item.className = 'flex justify-between items-center bg-slate-50 p-3 rounded-xl text-sm';
+                item.innerHTML = `
+                    <div>
+                        <span class="font-bold text-slate-800">${exp.name}</span>
+                        <span class="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md ml-2">${exp.payer} 先付</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="font-bold text-pink-600">NT$ ${Number(exp.amount).toLocaleString()}</span>
+                        <button onclick="deleteExpense(${exp.id})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+
+            document.getElementById('total-n').innerText = `NT$ ${totalN.toLocaleString()}`;
+            document.getElementById('total-l').innerText = `NT$ ${totalL.toLocaleString()}`;
+
+            const diff = totalN - totalL;
+            const summaryEl = document.getElementById('settle-summary');
+            if (diff > 0) {
+                const half = Math.round(diff / 2);
+                summaryEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> <strong>結算結果</strong>：L 需補貼給 N 共 <strong>NT$ ${half.toLocaleString()}</strong>`;
+            } else if (diff < 0) {
+                const half = Math.round(Math.abs(diff) / 2);
+                summaryEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> <strong>結算結果</strong>：N 需補貼給 L 共 <strong>NT$ ${half.toLocaleString()}</strong>`;
+            } else {
+                summaryEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> <strong>結算結果</strong>：目前帳目完全平手，互不欠款！`;
+            }
+        }
+
+        function addExpense(e) {
+            e.preventDefault();
+            const name = document.getElementById('exp-name').value;
+            const amount = document.getElementById('exp-amount').value;
+            const payer = document.getElementById('exp-payer').value;
+
+            expenses.push({
+                id: Date.now(),
+                name,
+                amount,
+                payer
+            });
+
+            document.getElementById('exp-name').value = '';
+            document.getElementById('exp-amount').value = '';
+            renderExpenses();
+        }
+
+        function deleteExpense(id) {
+            expenses = expenses.filter(exp => exp.id !== id);
+            renderExpenses();
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            renderItinerary();
+            renderExpenses();
+        };
+    </script>
+</body>
+</html>
